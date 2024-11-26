@@ -4,7 +4,7 @@ from pywinauto import Desktop
 import csv
 import pywinauto.mouse as mouse
 from pywinauto import keyboard
-windows = Desktop(backend="uia").windows()
+
 import time
 #print([w.window_text() for w in windows])
 #print (findwindows.find_windows(title_re=".*DIA*"))
