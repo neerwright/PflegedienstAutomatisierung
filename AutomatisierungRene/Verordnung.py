@@ -18,12 +18,6 @@ def setup_winDia():
             app = Application(backend="uia").connect(handle=window.handle, timeout=4)
             windia = app.window(handle=window.handle)
 
-            newApp = Application(backend="win32").connect(handle=window.handle)
-            windia32 = newApp.window(handle=window.handle)
-            print(windia32.print_control_identifiers())
-            s = windia32.MehrfachauswahlSPR32A80_SpreadSheet
-            #print((s.print_control_identifiers()))
-            s.click_input()
             return windia
 
 
@@ -33,15 +27,27 @@ def print_info(dialog):
 
 
 
-def select_patient(windia, verordnung_window, patient):
-    #click_magnifying_glas(verordnung_window.rectangle())
-    #print_info(windia)
-    #app=Desktop(backend="win32").windows()
-    #print(app)
-    pass
-    #mehr = windia.child_window(title="Mehrfachauswahl", auto_id="42", control_type="CheckBox").wrapper_object()
-    #mehr.click_input()
+def select_patient(windia, patient_firstname, patient_surname):
+    patient_name = patient_surname + patient_firstname
+    #open Patienten Window
+    windia.set_focus()
+    keyboard.send_keys("%{s}{p}")
+    #Find patient
+    patient_scrollbar = windia.child_window(auto_id="1", control_type="List").wrapper_object()
+    patients = patient_scrollbar.children(control_type='ListItem')
+    for patient in patients:
+        patient_string = ""
+        for char in patient.window_text():
+            if char.isalpha():
+                patient_string += char
+        if patient_string == patient_name:
+            print("found patient!")
+            patient.invoke()
 
+def new_verordnung(windia):
+    #open verordnung Window
+    windia.set_focus()
+    keyboard.send_keys("%{e}{v}")
 
 
 def get_verordnungen_window(dialog):
@@ -61,6 +67,6 @@ def click_magnifying_glas(win_rectangle):
     mouse.click(coords=(int(x), int(y)))
 
 windia = setup_winDia()
-verordnung_window = get_verordnungen_window(windia)
-select_patient(windia,verordnung_window, "Celep, Efe")
-
+#verordnung_window = get_verordnungen_window(windia)
+#select_patient(windia, "Hanna", "Schnaible")
+new_verordnung(windia)
