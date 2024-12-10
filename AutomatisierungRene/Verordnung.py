@@ -4,7 +4,7 @@ from pywinauto import Desktop
 import csv
 import pywinauto.mouse as mouse
 from pywinauto import keyboard
-
+import time
 
 
 
@@ -50,6 +50,19 @@ def new_verordnung(windia):
     keyboard.send_keys("%{e}{v}")
 
 
+    #click new
+    verordnung_dlg = get_verordnungen_window(windia)
+    click_inside_window(verordnung_dlg.rectangle(),3/8 , 9/10)
+
+    #VO auswählen
+    all_vo_checkbox = windia.child_window(title="alle VO anzeigen", auto_id="46", control_type="CheckBox").wrapper_object()
+    all_vo_checkbox.invoke()
+    ok_btn = windia.child_window(title="OK", auto_id="2", control_type="Button").wrapper_object()
+    ok_btn.invoke()
+    
+    input_zeitintensive_pflege_kinde(windia, verordnung_dlg)
+    
+
 def get_verordnungen_window(dialog):
     sub_windows = dialog.children()
     
@@ -59,11 +72,34 @@ def get_verordnungen_window(dialog):
                 if "Verordnung" in dlg.window_text():
                     return dlg
 
-def click_magnifying_glas(win_rectangle):
+def input_zeitintensive_pflege_kinde(windia, verordnung_dlg):
+    vo_dropdown = windia.Edit.wrapper_object()
+    click_inside_window(verordnung_dlg.rectangle(),1/10 , 1/2 , False)
+    click_inside_window(verordnung_dlg.rectangle(),1/10 , 6/9)
+    time.sleep(0.1)
+    for item in vo_dropdown.legacy_properties().values():
+        if "Zeitintensive Pflege" in str(item):
+            print(item)
+            return
+    
+    #the dropdown was sorted in the wrong way - need to try again
+    vo_dropdown = windia.Edit.wrapper_object()
+    click_inside_window(verordnung_dlg.rectangle(),1/10 , 1/2 , False)
+    click_inside_window(verordnung_dlg.rectangle(),1/10 , 6/9)
+    for item in vo_dropdown.legacy_properties().values():
+        if "Zeitintensive Pflege" in str(item):
+            print(item)
+            print("2")
+            return
+
+def click_inside_window(win_rectangle, left_percent, top_percent, double_click = False):
     width = win_rectangle.right - win_rectangle.left
     height = win_rectangle.bottom - win_rectangle.top
-    x = win_rectangle.left + width * (1/6.4)
-    y = win_rectangle.top + height * (1/7)
+    x = win_rectangle.left + width * (left_percent)
+    y = win_rectangle.top + height * (top_percent)
+    if(double_click):
+        mouse.double_click(coords=(int(x), int(y)))
+        return 
     mouse.click(coords=(int(x), int(y)))
 
 windia = setup_winDia()
