@@ -103,6 +103,17 @@ def click_inside_window(win_rectangle, left_percent, top_percent, double_click =
     mouse.click(coords=(int(x), int(y)))
 
 windia = setup_winDia()
-#verordnung_window = get_verordnungen_window(windia)
 #select_patient(windia, "Hanna", "Schnaible")
-new_verordnung(windia)
+#new_verordnung(windia)
+
+#print_info(windia)
+#comboBox = windia.child_window(auto_id="48", control_type="ComboBox").wrapper_object()
+#Intervall = comboBox.children(control_type='Edit')
+#print(Intervall[0].get_value())
+
+time_begin = windia.child_window(auto_id="51", control_type="Edit").wrapper_object()
+time_begin.set_text("02.10.2024")
+print(time_begin.get_value())
+
+time_end = windia.child_window(auto_id="53", control_type="Edit").wrapper_object()
+time_end.set_text("03.10.2024")
