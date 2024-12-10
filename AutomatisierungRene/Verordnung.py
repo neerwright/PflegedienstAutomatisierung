@@ -1,7 +1,6 @@
 from pywinauto.application import Application
 from pywinauto import findwindows
 from pywinauto import Desktop
-import csv
 import pywinauto.mouse as mouse
 from pywinauto import keyboard
 import time
