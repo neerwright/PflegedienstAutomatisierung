@@ -122,6 +122,8 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     p_insurance_number = windia.child_window(auto_id="137", control_type="Edit").wrapper_object()
     p_insurance_number.set_text(insurence_number)
 
+    #----------------Rechnung-------------------------#
+
     #SAFE
 
     
