@@ -50,12 +50,12 @@ def click_inside_window(win_rectangle, left_percent, top_percent, double_click =
 def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip_code, city, telephone, care_beginning_date, care_end_date ,admission_date, doctor, diagnoses, insurance, insurence_number, level_of_care, Rechnung = None ):
     
     
-
-    
     #click NEW
     patient_dlg = get_patient_window(windia)
     click_inside_window(patient_dlg.rectangle(),3/9 , 9/10)
 
+    
+ 
      #----------------Stamm-------------------------#
 
     p_name = windia.child_window(auto_id="193", control_type="Edit").wrapper_object()
@@ -98,18 +98,37 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
 
     #----------------Pflege-------------------------#
 
+    #----------------Pflegekasse-------------------------#
 
+    #----------------Krankenkasse-------------------------#
+    click_inside_window(patient_dlg.rectangle(),4/9 , 3/13)
+    krankenkasse_checkbox = windia.child_window(title="Behandlungspflege   ja / nein", control_type="Pane")
+    krankenkasse_checkbox.click_input()
 
+    insurance_dropdown = windia.child_window(auto_id="138", control_type="ComboBox").wrapper_object()   
+    insurance_button = insurance_dropdown.children(control_type='Button')[0]
+    insurance_button.invoke()
 
-    #save button
-    #click_inside_window(patient_dlg.rectangle(),2/5 , 9/10)
+    insurences_list = insurance_dropdown.children(control_type='List')[0]
+    insurences = insurences_list.children(control_type='ListItem')
 
+    for insurance in insurences:
+        #print((insurance.window_text()))
+
+        if "Universitätsklinikum Tübingen" in insurance.window_text():
+            print(insurance)
+            insurance.invoke()
+    
+    p_insurance_number = windia.child_window(auto_id="137", control_type="Edit").wrapper_object()
+    p_insurance_number.set_text(insurence_number)
+
+    #SAFE
 
     
     
 windia = setup_winDia()
 #open_patient_window(windia)
 #print_info(windia)
-add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025",1,1,1,1,1)
+add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1)
 #patient_dlg = get_patient_window(windia)
 #click_inside_window(patient_dlg.rectangle(), 2/5 , 9/10)
