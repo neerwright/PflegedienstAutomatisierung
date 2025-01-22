@@ -3,6 +3,7 @@ from pywinauto import findwindows
 from pywinauto import Desktop
 import pywinauto.mouse as mouse
 from pywinauto import keyboard
+from dataclasses import dataclass
 import time
 
 def setup_winDia():
@@ -47,14 +48,35 @@ def click_inside_window(win_rectangle, left_percent, top_percent, double_click =
     mouse.click(coords=(int(x), int(y)))
 
 
-def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip_code, city, telephone, care_beginning_date, care_end_date ,admission_date, doctor, diagnoses, insurance, insurence_number, level_of_care, Rechnung = None ):
+def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip_code, city, telephone, care_beginning_date, care_end_date ,admission_date, doctor, diagnoses, insurance, insurence_number, level_of_care, invoice_anrede = None, invoice_name = None, invoice_name_second_line = None ):
     
     
     #click NEW
     patient_dlg = get_patient_window(windia)
-    click_inside_window(patient_dlg.rectangle(),3/9 , 9/10)
-
+    #click_inside_window(patient_dlg.rectangle(),3/9 , 9/10)
     
+
+    click_inside_window(patient_dlg.rectangle(),6/10 , 3/13)
+    #aNREDE
+    anrede_comboBox = windia.child_window(auto_id="92", control_type="ComboBox").wrapper_object()
+    i_anrede = anrede_comboBox.children(control_type='Edit')
+    i_anrede[0].set_text(invoice_anrede)
+
+    i_name = windia.child_window(auto_id="89", control_type="Edit").wrapper_object()
+    i_name.set_text(invoice_name)
+
+    i_name = windia.child_window(auto_id="91", control_type="Edit").wrapper_object()
+    i_name.set_text(invoice_name_second_line)
+    
+    i_street = windia.child_window(auto_id="88", control_type="Edit").wrapper_object()
+    i_street.set_text(street)
+
+    i_zip = windia.child_window(auto_id="87", control_type="Edit").wrapper_object()
+    i_zip.set_text(zip_code)
+
+    i_city = windia.child_window(auto_id="86", control_type="Edit").wrapper_object()
+    i_city.set_text(city)
+    return
  
      #----------------Stamm-------------------------#
 
@@ -102,6 +124,7 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
 
     #----------------Krankenkasse-------------------------#
     click_inside_window(patient_dlg.rectangle(),4/9 , 3/13)
+
     krankenkasse_checkbox = windia.child_window(title="Behandlungspflege   ja / nein", control_type="Pane")
     krankenkasse_checkbox.click_input()
 
@@ -123,6 +146,8 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     p_insurance_number.set_text(insurence_number)
 
     #----------------Rechnung-------------------------#
+    
+
 
     #SAFE
 
@@ -131,6 +156,12 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
 windia = setup_winDia()
 #open_patient_window(windia)
 #print_info(windia)
-add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1)
+add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
 #patient_dlg = get_patient_window(windia)
 #click_inside_window(patient_dlg.rectangle(), 2/5 , 9/10)
+
+@dataclass
+class Point:
+    x: float
+    y: float
+    z: float = 0.0
