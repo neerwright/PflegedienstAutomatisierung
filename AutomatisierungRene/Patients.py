@@ -28,6 +28,10 @@ def open_patient_window(windia):
     windia.set_focus()
     keyboard.send_keys("%{s}{p}")
 
+def open_catalog_window(windia):
+    windia.set_focus()
+    keyboard.send_keys("%{G}")
+
 def get_patient_window(dialog):
     sub_windows = dialog.children()
     
@@ -36,6 +40,23 @@ def get_patient_window(dialog):
             for dlg in window.children():
                 if "Patient" in dlg.window_text():
                     return dlg
+
+def get_catalog_window(dialog):
+    sub_windows = dialog.children()
+    
+    for window in sub_windows:
+        if "Arbeitsbereich" in window.window_text():
+            for dlg in window.children():
+                if "Erfassung Gebührenkatalog" in dlg.window_text():
+                    return dlg
+                
+def check_popup_window(dialog):
+    sub_windows = dialog.children()
+    
+    for window in sub_windows:
+        if "windia" == window.window_text():
+            no_btn = dialog.child_window(auto_id="7", control_type="Button").wrapper_object()
+            no_btn.invoke()
 
 def click_inside_window(win_rectangle, left_percent, top_percent, double_click = False):
     width = win_rectangle.right - win_rectangle.left
@@ -53,30 +74,11 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     
     #click NEW
     patient_dlg = get_patient_window(windia)
-    #click_inside_window(patient_dlg.rectangle(),3/9 , 9/10)
+    click_inside_window(patient_dlg.rectangle(),3/9 , 9/10)
     
 
-    click_inside_window(patient_dlg.rectangle(),6/10 , 3/13)
-    #aNREDE
-    anrede_comboBox = windia.child_window(auto_id="92", control_type="ComboBox").wrapper_object()
-    i_anrede = anrede_comboBox.children(control_type='Edit')
-    i_anrede[0].set_text(invoice_anrede)
-
-    i_name = windia.child_window(auto_id="89", control_type="Edit").wrapper_object()
-    i_name.set_text(invoice_name)
-
-    i_name = windia.child_window(auto_id="91", control_type="Edit").wrapper_object()
-    i_name.set_text(invoice_name_second_line)
     
-    i_street = windia.child_window(auto_id="88", control_type="Edit").wrapper_object()
-    i_street.set_text(street)
-
-    i_zip = windia.child_window(auto_id="87", control_type="Edit").wrapper_object()
-    i_zip.set_text(zip_code)
-
-    i_city = windia.child_window(auto_id="86", control_type="Edit").wrapper_object()
-    i_city.set_text(city)
-    return
+    
  
      #----------------Stamm-------------------------#
 
@@ -146,19 +148,99 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     p_insurance_number.set_text(insurence_number)
 
     #----------------Rechnung-------------------------#
+    click_inside_window(patient_dlg.rectangle(),6/10 , 3/13)
+    #aNREDE
+    anrede_comboBox = windia.child_window(auto_id="92", control_type="ComboBox").wrapper_object()
+    i_anrede = anrede_comboBox.children(control_type='Edit')
+    i_anrede[0].set_text(invoice_anrede)
+
+    i_name = windia.child_window(auto_id="89", control_type="Edit").wrapper_object()
+    i_name.set_text(invoice_name)
+
+    i_name = windia.child_window(auto_id="91", control_type="Edit").wrapper_object()
+    i_name.set_text(invoice_name_second_line)
     
+    i_street = windia.child_window(auto_id="88", control_type="Edit").wrapper_object()
+    i_street.set_text(street)
+
+    i_zip = windia.child_window(auto_id="87", control_type="Edit").wrapper_object()
+    i_zip.set_text(zip_code)
+
+    i_city = windia.child_window(auto_id="86", control_type="Edit").wrapper_object()
+    i_city.set_text(city)
 
 
     #SAFE
 
-    
-    
+def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
+    #select catalog
+    catalog_dropdown = windia.child_window(auto_id="52", control_type="ComboBox").wrapper_object()   
+    catalog_button = catalog_dropdown.children(control_type='Button')[0]
+    catalog_button.invoke()
+
+    catalog_list = catalog_dropdown.children(control_type='List')[0]
+    catalogs = catalog_list.children(control_type='ListItem')
+    for catalog in catalogs:
+        if "Selbstzahler" in catalog.window_text():
+            catalog.invoke()
+
+    time.sleep(0.5)
+
+
+    #select Praxiseinsatz 1 and then 2
+    for i in range(1,5):
+        print(i)
+        praxiseinsatz_index = ("1" if i == 1 else "2")
+        
+        praxiseinsatz_dropdown = windia.child_window(auto_id="83", control_type="ComboBox").wrapper_object()   
+        praxiseinsatz_button = praxiseinsatz_dropdown.children(control_type='Button')[0]
+        praxiseinsatz_button.invoke()
+
+        praxiseinsatz_list = praxiseinsatz_dropdown.children(control_type='List')[0]
+        praxiseinsaetze = praxiseinsatz_list.children(control_type='ListItem')
+        
+        for praxiseinsatz in praxiseinsaetze:
+            print(praxiseinsatz.window_text())
+            if (i%2) == 1 and f"Praxiseinsatz {praxiseinsatz_index}" in praxiseinsatz.window_text():
+                praxiseinsatz.invoke()
+            elif (i%2) == 0 and f"{i}-{i}" in praxiseinsatz.window_text():
+                praxiseinsatz.invoke()
+
+        #Change Name, Price and Number
+        catalog_dlg = get_catalog_window(windia)
+        click_inside_window(catalog_dlg.rectangle(),5/9 , 9/10)    #Ändern btn    
+        price = windia.child_window(auto_id="80", control_type="Edit").wrapper_object()
+        name = windia.child_window(auto_id="82", control_type="Edit").wrapper_object()
+
+        if(i%2 == 1):
+            price.set_text(hourly_wage)
+            name.set_text(f"Praxiseinsatz {praxiseinsatz_index}: allg. ambulante Akut- und Langzeitpflege")
+        else:
+            #price.set_text("0,01")
+            name.set_text(f"{dates[(i%3) % 2]}, {hours[(i%3) % 2]} h")
+
+        number = windia.child_window(auto_id="85", control_type="Edit").wrapper_object()
+        number.set_text(str(i))
+
+        row = windia.child_window(auto_id="67", control_type="Edit").wrapper_object()
+        row.set_text(str(i))
+
+        click_inside_window(catalog_dlg.rectangle(),5/9 , 9/10)    #Save btn   
+        check_popup_window(windia)
+    #select line with the date for Praxiseinsatz 1 and then 2
+
+
+
+
 windia = setup_winDia()
 #open_patient_window(windia)
-#print_info(windia)
-add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
-#patient_dlg = get_patient_window(windia)
-#click_inside_window(patient_dlg.rectangle(), 2/5 , 9/10)
+#add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
+
+#open_catalog_window(windia)
+dates = ["29.07.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
+hours = ["220,05", "218,7"] 
+change_gebuerenkatalog(windia, "10,74",dates, hours)
+
 
 @dataclass
 class Point:
