@@ -30,7 +30,11 @@ def open_patient_window(windia):
 
 def open_catalog_window(windia):
     windia.set_focus()
-    keyboard.send_keys("%{G}")
+    keyboard.send_keys("^G")
+
+def open_ln_window(windia):
+    windia.set_focus()
+    keyboard.send_keys("^L")  
 
 def get_patient_window(dialog):
     sub_windows = dialog.children()
@@ -50,6 +54,18 @@ def get_catalog_window(dialog):
                 if "Erfassung Gebührenkatalog" in dlg.window_text():
                     return dlg
                 
+def get_ln_window(dialog):
+    open_windows = Desktop(backend="uia").windows()
+
+    for window in open_windows:
+        
+        window_title = window.window_text()
+        if "testname" in window_title:
+            app = Application(backend="uia").connect(handle=window.handle, timeout=4)
+            ln = app.window(handle=window.handle)
+
+            return ln
+                
 def check_popup_window(dialog):
     sub_windows = dialog.children()
     
@@ -66,7 +82,7 @@ def click_inside_window(win_rectangle, left_percent, top_percent, double_click =
     if(double_click):
         mouse.double_click(coords=(int(x), int(y)))
         return 
-    mouse.click(coords=(int(x), int(y)))
+    mouse.move(coords=(int(x), int(y)))
 
 
 def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip_code, city, telephone, care_beginning_date, care_end_date ,admission_date, doctor, diagnoses, insurance, insurence_number, level_of_care, invoice_anrede = None, invoice_name = None, invoice_name_second_line = None ):
@@ -171,6 +187,7 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
 
 
     #SAFE
+    click_inside_window(patient_dlg.rectangle(), 4/9 , 9/10)
 
 def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
     #select catalog
@@ -230,6 +247,23 @@ def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
     #select line with the date for Praxiseinsatz 1 and then 2
 
 
+def change_leistungsnachweis(windia):
+    #select Selbstzahler tab
+    ln_dlg = get_ln_window(windia)
+    #click_inside_window(ln_dlg.rectangle(),6/9 , 1/8)
+
+    #Click inside Table
+    #click_inside_window(ln_dlg.rectangle(),3/10 , 15/40)
+    #keyboard.send_keys("200")
+    #click_inside_window(ln_dlg.rectangle(),3/10 , 16/40)
+
+    #click_inside_window(ln_dlg.rectangle(),3/10 , 17/41)
+    #keyboard.send_keys("200")
+    #click_inside_window(ln_dlg.rectangle(),3/10 , 18/41)
+
+    #click Rechnug = Done
+    click_inside_window(ln_dlg.rectangle(),3/11 , 9/10)
+
 
 
 windia = setup_winDia()
@@ -239,8 +273,9 @@ windia = setup_winDia()
 #open_catalog_window(windia)
 dates = ["29.07.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
 hours = ["220,05", "218,7"] 
-change_gebuerenkatalog(windia, "10,74",dates, hours)
-
+#change_gebuerenkatalog(windia, "10,74",dates, hours)
+#open_ln_window(windia)
+change_leistungsnachweis(windia)
 
 @dataclass
 class Point:
