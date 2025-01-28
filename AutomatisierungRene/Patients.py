@@ -93,12 +93,14 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     #click NEW
     patient_dlg = get_patient_window(windia)
     wait_until(5, 0.1, patient_dlg.is_enabled)
-    #time.delay(0.5)
-    click_inside_window(patient_dlg.rectangle(), 3/9 , 9/10)
+    #click_inside_window(patient_dlg.rectangle(), 3/9 , 9/10)
     
 
-    
-    
+    #----------------Pflegekasse-------------------------#
+    krankenkasse_checkbox = windia.child_window(title="Pflegeversicherung   ja / nein", control_type="Pane")
+    krankenkasse_checkbox.click_input()
+
+    return
  
      #----------------Stamm-------------------------#
 
@@ -272,14 +274,14 @@ def change_leistungsnachweis(windia):
 
 windia = setup_winDia()
 #open_patient_window(windia)
-#add_new_patient(windia,"testname2","testSurname2","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
+add_new_patient(windia,"testname2","testSurname2","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
 
 #open_catalog_window(windia)
 dates = ["29.07.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
 hours = ["220,05", "218,7"] 
 #change_gebuerenkatalog(windia, "10,74",dates, hours)
-open_ln_window(windia)
-change_leistungsnachweis(windia)
+#open_ln_window(windia)
+#change_leistungsnachweis(windia)
 
 @dataclass
 class Point:
