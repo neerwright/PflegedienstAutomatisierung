@@ -5,6 +5,7 @@ import pywinauto.mouse as mouse
 from pywinauto import keyboard
 from dataclasses import dataclass
 import time
+from pywinauto.timings import wait_until
 
 def setup_winDia():
     open_windows = Desktop(backend="uia").windows()
@@ -54,12 +55,13 @@ def get_catalog_window(dialog):
                 if "Erfassung Gebührenkatalog" in dlg.window_text():
                     return dlg
                 
-def get_ln_window(dialog):
+def get_ln_window(dialog):  #TODO: change testname 
     open_windows = Desktop(backend="uia").windows()
 
     for window in open_windows:
         
         window_title = window.window_text()
+        print(window_title)
         if "testname" in window_title:
             app = Application(backend="uia").connect(handle=window.handle, timeout=4)
             ln = app.window(handle=window.handle)
@@ -82,7 +84,7 @@ def click_inside_window(win_rectangle, left_percent, top_percent, double_click =
     if(double_click):
         mouse.double_click(coords=(int(x), int(y)))
         return 
-    mouse.move(coords=(int(x), int(y)))
+    mouse.click(coords=(int(x), int(y)))
 
 
 def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip_code, city, telephone, care_beginning_date, care_end_date ,admission_date, doctor, diagnoses, insurance, insurence_number, level_of_care, invoice_anrede = None, invoice_name = None, invoice_name_second_line = None ):
@@ -90,7 +92,9 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     
     #click NEW
     patient_dlg = get_patient_window(windia)
-    click_inside_window(patient_dlg.rectangle(),3/9 , 9/10)
+    wait_until(5, 0.1, patient_dlg.is_enabled)
+    #time.delay(0.5)
+    click_inside_window(patient_dlg.rectangle(), 3/9 , 9/10)
     
 
     
@@ -191,7 +195,7 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
 
 def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
     #select catalog
-    catalog_dropdown = windia.child_window(auto_id="52", control_type="ComboBox").wrapper_object()   
+    catalog_dropdown = windia.child_window(auto_id="52", control_type="ComboBox").wrapper_object()  
     catalog_button = catalog_dropdown.children(control_type='Button')[0]
     catalog_button.invoke()
 
@@ -206,7 +210,6 @@ def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
 
     #select Praxiseinsatz 1 and then 2
     for i in range(1,5):
-        print(i)
         praxiseinsatz_index = ("1" if i == 1 else "2")
         
         praxiseinsatz_dropdown = windia.child_window(auto_id="83", control_type="ComboBox").wrapper_object()   
@@ -217,7 +220,6 @@ def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
         praxiseinsaetze = praxiseinsatz_list.children(control_type='ListItem')
         
         for praxiseinsatz in praxiseinsaetze:
-            print(praxiseinsatz.window_text())
             if (i%2) == 1 and f"Praxiseinsatz {praxiseinsatz_index}" in praxiseinsatz.window_text():
                 praxiseinsatz.invoke()
             elif (i%2) == 0 and f"{i}-{i}" in praxiseinsatz.window_text():
@@ -249,32 +251,34 @@ def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
 
 def change_leistungsnachweis(windia):
     #select Selbstzahler tab
+    time.sleep(10)
     ln_dlg = get_ln_window(windia)
-    #click_inside_window(ln_dlg.rectangle(),6/9 , 1/8)
+
+    click_inside_window(ln_dlg.rectangle(),6/9 , 1/8)
 
     #Click inside Table
-    #click_inside_window(ln_dlg.rectangle(),3/10 , 15/40)
-    #keyboard.send_keys("200")
-    #click_inside_window(ln_dlg.rectangle(),3/10 , 16/40)
+    click_inside_window(ln_dlg.rectangle(),3/10 , 15/40)
+    keyboard.send_keys("200")
+    click_inside_window(ln_dlg.rectangle(),3/10 , 16/40)
 
-    #click_inside_window(ln_dlg.rectangle(),3/10 , 17/41)
-    #keyboard.send_keys("200")
-    #click_inside_window(ln_dlg.rectangle(),3/10 , 18/41)
+    click_inside_window(ln_dlg.rectangle(),3/10 , 17/41)
+    keyboard.send_keys("200")
+    click_inside_window(ln_dlg.rectangle(),3/10 , 18/41)
 
     #click Rechnug = Done
-    click_inside_window(ln_dlg.rectangle(),3/11 , 9/10)
+    #click_inside_window(ln_dlg.rectangle(),3/11 , 9/10)
 
 
 
 windia = setup_winDia()
 #open_patient_window(windia)
-#add_new_patient(windia,"testname","testSurname","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
+#add_new_patient(windia,"testname2","testSurname2","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
 
 #open_catalog_window(windia)
 dates = ["29.07.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
 hours = ["220,05", "218,7"] 
 #change_gebuerenkatalog(windia, "10,74",dates, hours)
-#open_ln_window(windia)
+open_ln_window(windia)
 change_leistungsnachweis(windia)
 
 @dataclass
