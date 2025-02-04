@@ -260,22 +260,22 @@ def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
 
 def change_leistungsnachweis(windia):
     #select Selbstzahler tab
-    time.sleep(10)
+    #time.sleep(20)
     ln_dlg = get_ln_window(windia)
 
     click_inside_window(ln_dlg.rectangle(),6/9 , 1/8)
 
     #Click inside Table
-    click_inside_window(ln_dlg.rectangle(),3/10 , 15/40)
+    click_inside_window(ln_dlg.rectangle(),3/10 , 18/50)
     keyboard.send_keys("200")
-    click_inside_window(ln_dlg.rectangle(),3/10 , 16/40)
+    click_inside_window(ln_dlg.rectangle(),3/10 , 19/50)
 
-    click_inside_window(ln_dlg.rectangle(),3/10 , 17/41)
+    click_inside_window(ln_dlg.rectangle(),3/10 , 20/50)
     keyboard.send_keys("200")
-    click_inside_window(ln_dlg.rectangle(),3/10 , 18/41)
+    click_inside_window(ln_dlg.rectangle(),3/10 , 21/50)
 
     #click Rechnug = Done
-    #click_inside_window(ln_dlg.rectangle(),3/11 , 9/10)
+    click_inside_window(ln_dlg.rectangle(),3/11 , 9/10)
 
 
 
@@ -287,15 +287,15 @@ windia = setup_winDia()
 
 #close_window(windia)
 
-open_catalog_window(windia)
+#open_catalog_window(windia)
 
 
-dates = ["29.07.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
+dates = ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
 hours = ["220,05", "218,7"] 
-change_gebuerenkatalog(windia, "10,74",dates, hours)
-close_window(windia)
-open_ln_window(windia)
-#change_leistungsnachweis(windia)
+#change_gebuerenkatalog(windia, "10,74",dates, hours)
+#close_window(windia)
+#open_ln_window(windia)
+change_leistungsnachweis(windia)
 
 @dataclass
 class Point:
