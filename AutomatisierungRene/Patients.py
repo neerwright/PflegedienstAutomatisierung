@@ -92,15 +92,16 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     
     #click NEW
     patient_dlg = get_patient_window(windia)
+
     wait_until(5, 0.1, patient_dlg.is_enabled)
-    #click_inside_window(patient_dlg.rectangle(), 3/9 , 9/10)
+    click_inside_window(patient_dlg.rectangle(), 3/9 , 9/10)
     
 
     #----------------Pflegekasse-------------------------#
-    krankenkasse_checkbox = windia.child_window(title="Pflegeversicherung   ja / nein", control_type="Pane")
-    krankenkasse_checkbox.click_input()
+    #krankenkasse_checkbox = windia.child_window(title="Pflegeversicherung   ja / nein", control_type="Pane")
+    #krankenkasse_checkbox.click_input()
 
-    return
+    
  
      #----------------Stamm-------------------------#
 
@@ -155,10 +156,11 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     insurance_dropdown = windia.child_window(auto_id="138", control_type="ComboBox").wrapper_object()   
     insurance_button = insurance_dropdown.children(control_type='Button')[0]
     insurance_button.invoke()
-
+    time.sleep(0.5)
+    print(insurance_dropdown.children(control_type='List'))
     insurences_list = insurance_dropdown.children(control_type='List')[0]
     insurences = insurences_list.children(control_type='ListItem')
-
+    
     for insurance in insurences:
         #print((insurance.window_text()))
 
@@ -191,16 +193,20 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     i_city = windia.child_window(auto_id="86", control_type="Edit").wrapper_object()
     i_city.set_text(city)
 
-
     #SAFE
-    click_inside_window(patient_dlg.rectangle(), 4/9 , 9/10)
+    click_inside_window(patient_dlg.rectangle(), 4/11 , 9/10)
+
+
+def close_window(dialog):
+    dialog.SchließenButton.invoke()
+
 
 def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
     #select catalog
     catalog_dropdown = windia.child_window(auto_id="52", control_type="ComboBox").wrapper_object()  
     catalog_button = catalog_dropdown.children(control_type='Button')[0]
     catalog_button.invoke()
-
+    time.sleep(0.5)
     catalog_list = catalog_dropdown.children(control_type='List')[0]
     catalogs = catalog_list.children(control_type='ListItem')
     for catalog in catalogs:
@@ -217,7 +223,8 @@ def  change_gebuerenkatalog(windia, hourly_wage, dates, hours):
         praxiseinsatz_dropdown = windia.child_window(auto_id="83", control_type="ComboBox").wrapper_object()   
         praxiseinsatz_button = praxiseinsatz_dropdown.children(control_type='Button')[0]
         praxiseinsatz_button.invoke()
-
+        print(praxiseinsatz_dropdown.children(control_type='List'))
+        time.sleep(0.5)
         praxiseinsatz_list = praxiseinsatz_dropdown.children(control_type='List')[0]
         praxiseinsaetze = praxiseinsatz_list.children(control_type='ListItem')
         
@@ -273,14 +280,21 @@ def change_leistungsnachweis(windia):
 
 
 windia = setup_winDia()
-#open_patient_window(windia)
-add_new_patient(windia,"testname2","testSurname2","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
+#print_info(windia)
 
-#open_catalog_window(windia)
+#open_patient_window(windia)
+#add_new_patient(windia,"testname3","testSurname3","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
+
+#close_window(windia)
+
+open_catalog_window(windia)
+
+
 dates = ["29.07.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] 
 hours = ["220,05", "218,7"] 
-#change_gebuerenkatalog(windia, "10,74",dates, hours)
-#open_ln_window(windia)
+change_gebuerenkatalog(windia, "10,74",dates, hours)
+close_window(windia)
+open_ln_window(windia)
 #change_leistungsnachweis(windia)
 
 @dataclass
