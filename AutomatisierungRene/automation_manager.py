@@ -8,6 +8,7 @@ import time
 from pywinauto.timings import wait_until
 from PflegedienstAutomatisierung.AutomatisierungRene.windia_enums import *
 from element_selection import *
+from enum import Enum
 
 ARBEITSBEREICH = "Arbeitsbereich"
 WINDIA_DLG_STRING = "windia"
@@ -18,10 +19,13 @@ class AutomationManager:
     windia = None
     cur_selected_patient = ""
     
+    
     def __init__(self):
         windia = self.setup_automation(WINDIA_DLG_STRING)
 
-    
+    def set_catalog_price(self, val):
+        self.catalog_price = val
+        
     def setup_automation(self, app_name):
         open_windows = Desktop(backend="uia").windows()
 
@@ -47,13 +51,13 @@ class AutomationManager:
                     if subDialog in dlg.window_text():
                         return dlg
                     
-    def get_separate_window(self, window_title : str):  
+    def get_separate_window(self, w_title : str):  
         open_windows = Desktop(backend="uia").windows()
 
         for window in open_windows:
             
             window_title = window.window_text()
-            if window_title in window_title:
+            if w_title in window_title:
                 app = Application(backend="uia").connect(handle=window.handle, timeout=4)
                 dialog = app.window(handle=window.handle)
 
@@ -71,12 +75,12 @@ class AutomationManager:
             case WindiaWindows.WINDIA:
                 pass
                     
-    def _click_popup_window_away(self):
+    def _click_popup_window_away(self, id):
         sub_windows = self.windia.children()
         
         for window in sub_windows:
             if WINDIA_DLG_STRING == window.window_text():
-                no_btn = self.windia.child_window(auto_id="7", control_type="Button").wrapper_object()
+                no_btn = self.windia.child_window(auto_id=str(id), control_type="Button").wrapper_object()
                 no_btn.invoke()
         
     def click_inside_window(self, window : WindiaWindows, left_percent, top_percent, click = True):
@@ -135,16 +139,27 @@ class AutomationManager:
     def get_child_object(self):
         pass
     
-    def input_text(self, field_name : str , text : str , title = None):
-        element_enum = self.patient_data.get_enum_from_field(field_name)
+    def input_text(self, field_name_or_enum , text : str ):
+        element_enum = None
+        if issubclass(field_name_or_enum, Enum):
+            element_enum = self.patient_data.get_enum_from_field(field_name_or_enum)
+        else:
+            element_enum = field_name_or_enum
+        
+        if not element_enum:
+            return
+        
         if element_enum.value == -1:
             return
         get_wrapper(element_enum, self.windia).set_text(text) 
         
+    
         
-    def select_from_dropdown(self, title : str, combo_box_id : str, element_to_select : str):
-        checkbox = self.windia.child_window(title=title, control_type="Pane")
-        checkbox.click_input()
+        
+    def select_from_dropdown(self, combo_box_id : str, element_to_select : str, title = None):
+        if title:
+            checkbox = self.windia.child_window(title=title, control_type="Pane")
+            checkbox.click_input()
 
         dropdown = self.windia.child_window(auto_id=combo_box_id, control_type="ComboBox").wrapper_object()   
         button = dropdown.children(control_type='Button')[0]
@@ -157,3 +172,6 @@ class AutomationManager:
             if element_to_select in element.window_text():
                 print(element)
                 element.invoke()
+                
+    def close_window(self):
+        self.windia.SchließenButton.invoke()

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-
+from windia_enums import PatientAutoID
 @dataclass
 class Patient:
     """Class for keeping track of Patient data"""
@@ -78,25 +78,5 @@ class Invoice:
                 return PatientAutoID.INVOICE_CITY
     
 
-class PatientAutoID(Enum):
-    NAME = 193
-    SURNAME = 192
-    BIRTHDAY = 165
-    ANREDE = 150
-    STREET = 157
-    ZIP = 158
-    CITY = 156
-    TELEPHONE = 151
-    BEGINNING_DATE = 166
-    END_DATE = 167
-    ADMISSION_DATE = 165
-    INSURANVE_NUMBER = 137
-    
-    GENDER = -1
-    INVOICE_ANREDE = 92
-    INVOICE_NAME_1 = 89
-    INVOICE_NAME_2 = 81
-    INVOICE_STREET = 88
-    INVOICE_ZIP = 87
-    INVOICE_CITY = 86
+
     
