@@ -196,7 +196,7 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
     #SAFE
     click_inside_window(patient_dlg.rectangle(), 4/11 , 9/10)
 
-
+#################### REFAKTORED ############
 def close_window(dialog):
     dialog.SchließenButton.invoke()
 
