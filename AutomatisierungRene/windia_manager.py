@@ -20,35 +20,7 @@ class WindiaManager:
     
     def __init__(self):
         self.autoManager = AutomationManager()
-        #self.patient_data = Patient()
-        #self.catalog_data = Catalog()
         
-    def set_patient_data(self, name, surname, birthday, anrede, street, zip, city, telephone, gender, care_beginning_date, care_end_date, admission_date ):
-        self.patient_data.name = name
-        self.patient_data.surname = surname
-        self.patient_dat.birthday = birthday
-        self.patient_data.anrede = anrede
-        self.patient_data.street = street
-        self.patient_data.zip = zip
-        self.patient_data.city = city
-        self.patient_data.telephone = telephone
-        self.patient_data.gender = gender
-        self.patient_data.care_beginning_date = care_beginning_date
-        self.patient_data.care_end_date = care_end_date
-        self.patient_data.admission_date = admission_date
-        
-    def set_catalog_data(self, catalog_wage, dates, hours):
-        self.catalog_data.catalog_wage = catalog_wage
-        self.catalog_data.dates = dates
-        self.catalog_data.hours = hours
-        
-    def set_invoice_data(self, anrede, name_line1, name_line2, street, zip, city):
-        self.patient_invoice.anrede = anrede
-        self.patient_invoice.name_2 = name_line1
-        self.patient_invoice.name_1 = name_line2
-        self.patient_invoice.street = street
-        self.patient_invoice.zip = zip
-        self.patient_invoice.city = city
 
     
     def add_new_patient(self):
@@ -81,6 +53,9 @@ class WindiaManager:
         if self.patient_invoice is not None:
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
             self._rechnung(self)
+
+        #SAVE
+        self._save_new_patient()
             
             
     def _rechnung(self):
@@ -139,7 +114,10 @@ class WindiaManager:
         self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
         input_hours_for_bill()
         
-        
+    def _save_new_patient(self):
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/11 , 9/10)
+        self.autoManager.cur_selected_patient = str(getattr(self.patient_data, "name")) + " " + str(getattr(self.patient_data, "surname"))
+
 
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
