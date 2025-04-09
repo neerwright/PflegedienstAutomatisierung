@@ -55,16 +55,16 @@ class WindiaManager:
         #click NEW
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
 
-        return
+        
         #input patient info
         if not self.patient_data:
             raise Exception("set_patient_data() need to be called before a new patient is added")
         
         for field in fields(self.patient_data):
-            if field.name == "k_insurance" or field.name == "p_insurance" or  field.name == "insurance_number":
+            if field.name == "k_insurance" or field.name == "p_insurance" or  field.name == "insurance_number" or field.name == "anrede":
                 continue
             if field.name == "gender":
-                self.autoManager.click_middle_of_field(field.name)
+                #self.autoManager.click_middle_of_field(field.name)
                 continue
             
             self.autoManager.input_text(field.name, getattr(self.patient_data, field.name))
@@ -72,10 +72,11 @@ class WindiaManager:
             
         #----------------Krankenkasse-------------------------#
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,4/9 , 3/13)
-        self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN , self.patient_data.k_insurance, INSURANCE_DROPDOWN_TITLE)
-        self.autoManager.input_text(self.patient_data.insurance_number.name, self.patient_data.insurance_number)
         
-    
+        self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN.value , self.patient_data.k_insurance, INSURANCE_DROPDOWN_TITLE)
+        self.autoManager.input_text(PatientAutoID.INSURANVE_NUMBER, self.patient_data.insurance_number)
+        
+        return
         #----------------Rechnung-------------------------#
         if self.patient_invoice is not None:
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
@@ -97,9 +98,9 @@ class WindiaManager:
             if (i == 3):
                 praxiseinsatz_index =  "2"
             if (i%2) == 1:    
-                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN , f"Praxiseinsatz {praxiseinsatz_index}")
+                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN.value , f"Praxiseinsatz {praxiseinsatz_index}")
             else:
-                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN , f"{i}-{i}")
+                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN.value , f"{i}-{i}")
             
 
             #Change Name, Price and Number
@@ -143,7 +144,7 @@ class WindiaManager:
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
-W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025", "XX", "Alianz", "Alianz P")
+W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025", "XX", "Universitätsklinikum Tübingen", "Alianz P")
 #W.set_patient_data("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025")
 W.add_new_patient()
 

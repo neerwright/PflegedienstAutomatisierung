@@ -22,7 +22,7 @@ class Patient:
     p_insurance: str
  
     
-    def get_enum_from_field(self, name):
+def get_enum_from_field(name):
         upper = name.upper()
         match upper:
             case "NAME":
@@ -49,8 +49,11 @@ class Patient:
                 return PatientAutoID.END_DATE
             case "ADMISSION_DATE":
                 return PatientAutoID.ADMISSION_DATE
-            case "ADMISSION_DATE":
-                return PatientAutoID.ADMISSION_DATE
+            case "GENDER":
+                return PatientAutoID.GENDER
+            case "INSURANCE_NUMBER":
+                return PatientAutoID.INSURANVE_NUMBER
+    
 
 @dataclass
 class Invoice:

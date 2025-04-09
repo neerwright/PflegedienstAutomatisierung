@@ -3,12 +3,11 @@ from pywinauto import findwindows
 from pywinauto import Desktop
 import pywinauto.mouse as mouse
 from pywinauto import keyboard
-from dataclasses import dataclass
 import time
 from pywinauto.timings import wait_until
 from windia_enums import *
 from element_selection import *
-from enum import Enum
+from patient_data_form import get_enum_from_field
 
 ARBEITSBEREICH = "Arbeitsbereich"
 WINDIA_DLG_STRING = "WinDIA® AMBULINO GmbH"
@@ -99,7 +98,9 @@ class AutomationManager:
             mouse.move(coords=(int(x), int(y)))
     
     def click_middle_of_field(self, field_name):
-        element_enum = self.patient_data.get_enum_from_field(field_name)
+        element_enum = get_enum_from_field(field_name)
+        if not element_enum:
+            return
         if element_enum.value == -1:
             w = get_wrapper(element_enum, self.windia)
             coordinates = get_rec_midpoint_of_wrapper(w)
@@ -144,8 +145,8 @@ class AutomationManager:
     
     def input_text(self, field_name_or_enum , text : str ):
         element_enum = None
-        if issubclass(field_name_or_enum, Enum):
-            element_enum = self.patient_data.get_enum_from_field(field_name_or_enum)
+        if isinstance(field_name_or_enum, str):
+            element_enum = get_enum_from_field(field_name_or_enum)
         else:
             element_enum = field_name_or_enum
         
@@ -154,6 +155,7 @@ class AutomationManager:
         
         if element_enum.value == -1:
             return
+        print(element_enum)
         get_wrapper(element_enum, self.windia).set_text(text) 
         
     
@@ -164,7 +166,7 @@ class AutomationManager:
             checkbox = self.windia.child_window(title=title, control_type="Pane")
             checkbox.click_input()
 
-        dropdown = self.windia.child_window(auto_id=combo_box_id, control_type="ComboBox").wrapper_object()   
+        dropdown = self.windia.child_window(auto_id=str(combo_box_id), control_type="ComboBox").wrapper_object()   
         button = dropdown.children(control_type='Button')[0]
         button.invoke()
         time.sleep(0.5)
