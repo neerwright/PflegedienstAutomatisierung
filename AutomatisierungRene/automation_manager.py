@@ -161,12 +161,12 @@ class AutomationManager:
     
         
         
-    def select_from_dropdown(self, combo_box_id : str, element_to_select : str, title = None):
-        if title:
-            checkbox = self.windia.child_window(title=title, control_type="Pane")
+    def select_from_dropdown(self, combo_box_id : Enum, element_to_select : str, tickbox_title = None):
+        if tickbox_title: # makes the dropdown appear on the Krankenkassen tab
+            checkbox = self.windia.child_window(title=tickbox_title, control_type="Pane")
             checkbox.click_input()
 
-        dropdown = self.windia.child_window(auto_id=str(combo_box_id), control_type="ComboBox").wrapper_object()   
+        dropdown = self.windia.child_window(auto_id=str(combo_box_id.value), control_type="ComboBox").wrapper_object()   
         button = dropdown.children(control_type='Button')[0]
         button.invoke()
         time.sleep(0.5)

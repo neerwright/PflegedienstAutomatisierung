@@ -73,10 +73,10 @@ class WindiaManager:
         #----------------Krankenkasse-------------------------#
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,4/9 , 3/13)
         
-        self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN.value , self.patient_data.k_insurance, INSURANCE_DROPDOWN_TITLE)
+        self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN , self.patient_data.k_insurance, INSURANCE_DROPDOWN_TITLE)
         self.autoManager.input_text(PatientAutoID.INSURANVE_NUMBER, self.patient_data.insurance_number)
         
-        return
+        
         #----------------Rechnung-------------------------#
         if self.patient_invoice is not None:
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
@@ -98,9 +98,9 @@ class WindiaManager:
             if (i == 3):
                 praxiseinsatz_index =  "2"
             if (i%2) == 1:    
-                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN.value , f"Praxiseinsatz {praxiseinsatz_index}")
+                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN , f"Praxiseinsatz {praxiseinsatz_index}")
             else:
-                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN.value , f"{i}-{i}")
+                self.autoManager.select_from_dropdown( CatalogAutoID.PRAXIS_DROPDOWN , f"{i}-{i}")
             
 
             #Change Name, Price and Number
@@ -146,7 +146,8 @@ W = WindiaManager()
 
 W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025", "XX", "Universitätsklinikum Tübingen", "Alianz P")
 #W.set_patient_data("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025")
-W.add_new_patient()
-
+#W.add_new_patient()
+W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
+W.change_gebuerenkatalog()
 
 
