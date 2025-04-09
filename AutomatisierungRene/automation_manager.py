@@ -23,6 +23,15 @@ class AutomationManager:
         self.windia = self.setup_automation(WINDIA_DLG_STRING)
         print(self.windia)
 
+    def select_gender(self, gender : str):
+        
+        w = self.windia.child_window(title=str(gender), control_type="Pane")
+        #if field.value == -1:
+        #    w = get_wrapper(field, self.windia)
+
+        coordinates = get_rec_midpoint_of_wrapper(w)
+        mouse.click(coords=(coordinates.x, coordinates.y))
+
     def set_catalog_price(self, val):
         self.catalog_price = val
         
@@ -91,20 +100,13 @@ class AutomationManager:
         x = win_rectangle.left + width * (left_percent)
         y = win_rectangle.top + height * (top_percent)
         if click:
-            #mouse.double_click(coords=(int(x), int(y)))
-            #return 
             mouse.click(coords=(int(x), int(y)))
         else:
             mouse.move(coords=(int(x), int(y)))
+        
     
-    def click_middle_of_field(self, field_name):
-        element_enum = get_enum_from_field(field_name)
-        if not element_enum:
-            return
-        if element_enum.value == -1:
-            w = get_wrapper(element_enum, self.windia)
-            coordinates = get_rec_midpoint_of_wrapper(w)
-            mouse.click(coords=(coordinates.x, coordinates.y))
+    
+
         
     def _get_rec(self, window : WindiaWindows):
         dlg = None
@@ -159,12 +161,15 @@ class AutomationManager:
         get_wrapper(element_enum, self.windia).set_text(text) 
         
     
-        
+    def check_pane_tickbox(self, tickbox_title : str):
+        checkbox = self.windia.child_window(title=tickbox_title, control_type="Pane")
+        checkbox.click_input()
         
     def select_from_dropdown(self, combo_box_id : Enum, element_to_select : str, tickbox_title = None):
         if tickbox_title: # makes the dropdown appear on the Krankenkassen tab
-            checkbox = self.windia.child_window(title=tickbox_title, control_type="Pane")
-            checkbox.click_input()
+            self.check_pane_tickbox(tickbox_title)
+            #checkbox = self.windia.child_window(title=tickbox_title, control_type="Pane")
+            #checkbox.click_input()
 
         dropdown = self.windia.child_window(auto_id=str(combo_box_id.value), control_type="ComboBox").wrapper_object()   
         button = dropdown.children(control_type='Button')[0]

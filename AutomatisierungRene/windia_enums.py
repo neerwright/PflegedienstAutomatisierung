@@ -39,3 +39,4 @@ class PatientAutoID(Enum):
     INVOICE_CITY = 86
     
     INSURANCE_DROPDOWN = 138
+    INSURANCE_P_DROPDOWN = 39

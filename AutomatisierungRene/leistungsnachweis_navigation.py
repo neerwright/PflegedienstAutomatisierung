@@ -8,20 +8,20 @@ def input_hours_for_bill(automationManager : AutomationManager):
     y = 320
     #click Selbstzahler tab
     automationManager.click_inside_window(WindiaWindows.LEISTUNGS_NACHWEIS, 6/9 , 1/8)
-    click_distance_from_top_left(465,320,a)
+    click_distance_from_top_left(465,320,automationManager)
     #Click inside Table
-    click_distance_from_top_left(x,y,a)
+    click_distance_from_top_left(x,y,automationManager)
     y += offset
     keyboard.send_keys("200")
 
-    click_distance_from_top_left(x,y,a)
+    click_distance_from_top_left(x,y,automationManager)
     y += offset
 
-    click_distance_from_top_left(x,y,a)
+    click_distance_from_top_left(x,y,automationManager)
     y += offset
 
     keyboard.send_keys("200")
-    click_distance_from_top_left(x,y,a)
+    click_distance_from_top_left(x,y,automationManager)
     y += offset
 
 
@@ -37,7 +37,4 @@ def click_distance_from_top_left(x : int , y : int , automationManager : Automat
     #
     mouse.click(coords= (int((int(rec.left) + int(x)) * multiplier), int((int(rec.top) + int(y)) *multiplier)))
 
-a = AutomationManager()
-a.cur_selected_patient = "Plattner"
 
-input_hours_for_bill(a)

@@ -1,6 +1,6 @@
 
 from enum import Enum
-from windia_enums import WindiaWindows
+from windia_enums import *
 from pywinauto.application import Application
 
 
@@ -20,9 +20,9 @@ def get_wrapper(element : Enum, windia, title = None):
                     
             
 def get_control_type(element_id):
-    if element_id == -1:
+    if element_id == PatientAutoID.GENDER.value:
         return "Pane"
-    if element_id == 92 or element_id == 150:
+    if element_id == PatientAutoID.INVOICE_ANREDE.value or element_id == PatientAutoID.ANREDE.value:
         return "ComboBox"
     return "Edit"
 
