@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from windia_enums import PatientAutoID
+
 @dataclass
 class Patient:
     """Class for keeping track of Patient data"""
@@ -12,7 +13,7 @@ class Patient:
     zip: str
     city: str
     telephone: str
-    gender: str = "female"
+    gender: str 
     care_beginning_date: str
     care_end_date: str
     admission_date : str

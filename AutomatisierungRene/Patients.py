@@ -95,7 +95,7 @@ def add_new_patient(windia, name, surname, birthday, anrede, gender, street, zip
 
     wait_until(5, 0.1, patient_dlg.is_enabled)
     click_inside_window(patient_dlg.rectangle(), 3/9 , 9/10)
-    
+    return
 
     #----------------Pflegekasse-------------------------#
     #krankenkasse_checkbox = windia.child_window(title="Pflegeversicherung   ja / nein", control_type="Pane")
@@ -282,8 +282,8 @@ def change_leistungsnachweis(windia):
 windia = setup_winDia()
 #print_info(windia)
 
-#open_patient_window(windia)
-#add_new_patient(windia,"testname3","testSurname3","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
+open_patient_window(windia)
+add_new_patient(windia,"testname3","testSurname3","01.01.2004","Frau","W","Froschberg 32","71126","Gäufelden","01561823412", "14.01.2025", "15.02.2025","13.01.2025","doc","diagnosis","Uni Tübingen","XX",1, "An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn" )
 
 #close_window(windia)
 

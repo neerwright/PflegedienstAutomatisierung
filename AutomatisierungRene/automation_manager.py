@@ -6,13 +6,13 @@ from pywinauto import keyboard
 from dataclasses import dataclass
 import time
 from pywinauto.timings import wait_until
-from PflegedienstAutomatisierung.AutomatisierungRene.windia_enums import *
+from windia_enums import *
 from element_selection import *
 from enum import Enum
 
 ARBEITSBEREICH = "Arbeitsbereich"
-WINDIA_DLG_STRING = "windia"
-PATIENT_DLG_STRING = "patient"
+WINDIA_DLG_STRING = "WinDIA® AMBULINO GmbH"
+PATIENT_DLG_STRING = "Patient"
 CATALOG_DLG_STRING = "Erfassung Gebührenkatalog"
 
 class AutomationManager:
@@ -21,7 +21,8 @@ class AutomationManager:
     
     
     def __init__(self):
-        windia = self.setup_automation(WINDIA_DLG_STRING)
+        self.windia = self.setup_automation(WINDIA_DLG_STRING)
+        print(self.windia)
 
     def set_catalog_price(self, val):
         self.catalog_price = val
@@ -41,12 +42,12 @@ class AutomationManager:
         
     def get_sub_window(self, subwindow_title : str , subDialog = None):
         sub_windows = self.windia.children()
-        
+        #print(sub_windows)
         for window in sub_windows:
             if subwindow_title in window.window_text():
                 if subDialog == None:
                     return window
-                
+                #print(window)
                 for dlg in window.children():
                     if subDialog in dlg.window_text():
                         return dlg
@@ -115,6 +116,8 @@ class AutomationManager:
                 dlg = self.get_sub_window(ARBEITSBEREICH, CATALOG_DLG_STRING)
             case WindiaWindows.WINDIA:
                 pass
+        if not dlg:
+            return
         wait_until(5, 0.1, dlg.is_enabled)
         return dlg.rectangle() if dlg else None
 

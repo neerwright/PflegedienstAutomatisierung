@@ -20,8 +20,8 @@ class WindiaManager:
     
     def __init__(self):
         self.autoManager = AutomationManager()
-        self.patient_data = Patient()
-        self.catalog_data = Catalog()
+        #self.patient_data = Patient()
+        #self.catalog_data = Catalog()
         
     def set_patient_data(self, name, surname, birthday, anrede, street, zip, city, telephone, gender, care_beginning_date, care_end_date, admission_date ):
         self.patient_data.name = name
@@ -54,7 +54,8 @@ class WindiaManager:
     def add_new_patient(self):
         #click NEW
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
-        
+
+        return
         #input patient info
         if not self.patient_data:
             raise Exception("set_patient_data() need to be called before a new patient is added")
@@ -138,3 +139,13 @@ class WindiaManager:
         input_hours_for_bill()
         
         
+
+W = WindiaManager()
+#W.autoManager.open_window(WindiaWindows.PATIENT)
+
+W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025", "XX", "Alianz", "Alianz P")
+#W.set_patient_data("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025")
+W.add_new_patient()
+
+
+
