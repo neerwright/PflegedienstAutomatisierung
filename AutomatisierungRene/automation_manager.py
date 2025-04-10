@@ -5,7 +5,7 @@ import pywinauto.mouse as mouse
 from pywinauto import keyboard
 import time
 from pywinauto.timings import wait_until
-from windia_enums import *
+from windia_ids import *
 from element_selection import *
 from patient_data_form import get_enum_from_field
 
@@ -168,8 +168,7 @@ class AutomationManager:
     def select_from_dropdown(self, combo_box_id : Enum, element_to_select : str, tickbox_title = None):
         if tickbox_title: # makes the dropdown appear on the Krankenkassen tab
             self.check_pane_tickbox(tickbox_title)
-            #checkbox = self.windia.child_window(title=tickbox_title, control_type="Pane")
-            #checkbox.click_input()
+
 
         dropdown = self.windia.child_window(auto_id=str(combo_box_id.value), control_type="ComboBox").wrapper_object()   
         button = dropdown.children(control_type='Button')[0]
@@ -179,9 +178,14 @@ class AutomationManager:
         elements = element_list.children(control_type='ListItem')
         
         for element in elements:
+            print(element.window_text())
             if element_to_select in element.window_text():
-                print(element)
-                element.invoke()
+                #print(element)
+                try:
+                    element.invoke()
+                except:
+                    print("something went wrong when selecting from dropdown, but will proceed")
+                    pass
                 
     def close_window(self):
         self.windia.SchließenButton.invoke()

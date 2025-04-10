@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from windia_enums import PatientAutoID
+from windia_ids import PatientAutoID
 
 @dataclass
 class Patient:

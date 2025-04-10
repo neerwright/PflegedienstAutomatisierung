@@ -1,5 +1,5 @@
 from automation_manager import AutomationManager
-from windia_enums import WindiaWindows
+from windia_ids import WindiaWindows
 from pywinauto import keyboard, mouse
 
 def input_hours_for_bill(automationManager : AutomationManager):

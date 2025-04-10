@@ -1,8 +1,8 @@
 from automation_manager import *
 from patient_data_form import Patient
-from windia_enums import WindiaWindows
+from windia_ids import WindiaWindows
 from dataclasses import dataclass, fields
-from windia_enums import *
+from windia_ids import *
 import re
 from catalog_data import Catalog
 from leistungsnachweis_navigation import *
@@ -129,17 +129,24 @@ class WindiaManager:
 
     def select_insurance(self, insurance : str):
         self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN , insurance)
+    
+    def select_docotor(self, doc : str, number : int):
+        if int(number) <= 1:
+            self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_1 , doc)
+        else:
+            self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_2 , doc)    
 
     def test(self):
-        self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
+        print("he")
+        self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_1 , "Hölle")
         
 
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
 W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025", "XX", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P")
-W.add_new_patient()
+#W.add_new_patient()
 #W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
 #W.change_gebuerenkatalog()
-#W.test()
+W.test()
 

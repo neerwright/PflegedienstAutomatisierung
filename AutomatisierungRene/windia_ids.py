@@ -40,3 +40,6 @@ class PatientAutoID(Enum):
     
     INSURANCE_DROPDOWN = 138
     INSURANCE_P_DROPDOWN = 39
+    DOC_DROPDOWN_1 = 67
+    DOC_DROPDOWN_2 = 70
+    LEISTUNG = 6
