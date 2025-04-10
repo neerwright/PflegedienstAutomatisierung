@@ -127,6 +127,9 @@ class WindiaManager:
         self.autoManager.cur_selected_patient = str(getattr(self.patient_data, "name")) + " " + str(getattr(self.patient_data, "surname"))
         print ("cur patient: ") + str(self.autoManager.cur_selected_patient)
 
+    def _edit_patient(self):
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/10 , 9/10)
+
     def select_insurance(self, insurance : str):
         self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN , insurance)
     
@@ -135,10 +138,18 @@ class WindiaManager:
             self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_1 , doc)
         else:
             self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_2 , doc)    
-
+    
+    def add_new_degree_of_care(self, deg : int, date : str):
+        if not ( 1 <= deg <= 5 ):
+            print ("Pflegegrad muss zwischen 1 und 5 sein")
+            return
+        
+        self.autoManager.click_button(PatientAutoID.PG_BUTTON)
+        #self.autoManager.set_pg(date, deg)
+    
     def test(self):
-        print("he")
-        self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_1 , "Hölle")
+        pass
+
         
 
 W = WindiaManager()
@@ -148,5 +159,5 @@ W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "
 #W.add_new_patient()
 #W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
 #W.change_gebuerenkatalog()
-W.test()
+W.add_new_degree_of_care(2, "12.01.2022")
 

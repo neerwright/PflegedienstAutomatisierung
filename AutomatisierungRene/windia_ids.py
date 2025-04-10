@@ -5,7 +5,7 @@ class WindiaWindows(Enum):
     LEISTUNGS_NACHWEIS = 1
     PATIENT = 2
     CATALOG = 3
-
+    CARE_DEGREE_HISTORY = 4
 
 class CatalogAutoID(Enum):
     MAIN_DROPDOWN = 52
@@ -42,4 +42,10 @@ class PatientAutoID(Enum):
     INSURANCE_P_DROPDOWN = 39
     DOC_DROPDOWN_1 = 67
     DOC_DROPDOWN_2 = 70
+
     LEISTUNG = 6
+
+    PG_BUTTON = 38
+
+    PG_HISTORY_TOOLBAR = -2
+

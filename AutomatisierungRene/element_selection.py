@@ -16,6 +16,7 @@ def get_wrapper(element : Enum, windia, title = None):
     if c_type == "ComboBox":
         comboBox = windia.child_window(auto_id=str(id), control_type=c_type).wrapper_object()
         return comboBox.children(control_type='Edit')
+    
     return windia.child_window(auto_id=str(id), control_type=c_type).wrapper_object()
                     
             
@@ -24,6 +25,8 @@ def get_control_type(element_id):
         return "Pane"
     if element_id == PatientAutoID.INVOICE_ANREDE.value or element_id == PatientAutoID.ANREDE.value or element_id == PatientAutoID.LEISTUNG.value:
         return "ComboBox"
+    if element_id == PatientAutoID.PG_BUTTON.value:
+        return "Button"
     return "Edit"
 
         

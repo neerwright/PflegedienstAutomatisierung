@@ -10,9 +10,11 @@ from element_selection import *
 from patient_data_form import get_enum_from_field
 
 ARBEITSBEREICH = "Arbeitsbereich"
+DEG_OF_CARE_WINDOW_TITLE = "Pflegestufenhistorie"
 WINDIA_DLG_STRING = "WinDIA® AMBULINO GmbH"
 PATIENT_DLG_STRING = "Patient"
 CATALOG_DLG_STRING = "Erfassung Gebührenkatalog"
+
 
 class AutomationManager:
     windia = None
@@ -26,8 +28,6 @@ class AutomationManager:
     def select_gender(self, gender : str):
         
         w = self.windia.child_window(title=str(gender), control_type="Pane")
-        #if field.value == -1:
-        #    w = get_wrapper(field, self.windia)
 
         coordinates = get_rec_midpoint_of_wrapper(w)
         mouse.click(coords=(coordinates.x, coordinates.y))
@@ -104,7 +104,9 @@ class AutomationManager:
         else:
             mouse.move(coords=(int(x), int(y)))
         
-    
+    def click_on_top_left_corner(self,element, offset_x : float, offset_y : float):
+        rec = element.rectangle()
+        mouse.click(coords=(int(rec.left + offset_x), int(rec.top + offset_y)))
     
 
         
@@ -117,6 +119,8 @@ class AutomationManager:
                 dlg = self.get_sub_window(ARBEITSBEREICH, PATIENT_DLG_STRING)
             case WindiaWindows.CATALOG:
                 dlg = self.get_sub_window(ARBEITSBEREICH, CATALOG_DLG_STRING)
+            case WindiaWindows.CARE_DEGREE_HISTORY:
+                dlg = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
             case WindiaWindows.WINDIA:
                 pass
         if not dlg:
@@ -189,3 +193,28 @@ class AutomationManager:
                 
     def close_window(self):
         self.windia.SchließenButton.invoke()
+
+    def click_button(self, button : Enum):
+        if button == PatientAutoID.PG_HISTORY_TOOLBAR:
+            pg_window = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
+            new_button = self.get_child_by_classname(pg_window,"AfxWnd40")
+            self.click_on_top_left_corner(new_button, 10,10)
+            return
+        
+        get_wrapper(button, self.windia).click()
+
+    def find_win32_window(self, w_title : str):
+        dialog = Desktop(backend="win32").window(title=w_title)
+        return dialog.wrapper_object()
+
+    def get_child_by_classname(self, element, classname : str):
+        for c in element.children():
+            if (c.class_name() == classname):
+                return c
+            
+    def set_pg(self, date : str, pg : str):
+        dialog = Desktop(backend="win32").window(title=DEG_OF_CARE_WINDOW_TITLE)
+        dialog.Edit0.wrapper_object().set_text(str(pg))  #PG
+        dialog.Edit2.wrapper_object().set_text(str(date)) #seit
+
+
