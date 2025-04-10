@@ -14,7 +14,7 @@ DEG_OF_CARE_WINDOW_TITLE = "Pflegestufenhistorie"
 WINDIA_DLG_STRING = "WinDIA® AMBULINO GmbH"
 PATIENT_DLG_STRING = "Patient"
 CATALOG_DLG_STRING = "Erfassung Gebührenkatalog"
-
+DIST_TO_SECOND_MONITOR = 750
 
 class AutomationManager:
     windia = None
@@ -104,28 +104,17 @@ class AutomationManager:
         else:
             mouse.move(coords=(int(x), int(y)))
         
-    def click_on_top_left_corner(self,element, offset_x : float, offset_y : float):
+    def click_on_top_left_corner(self,element, offset_x : float, offset_y : float, double_click = False):
         rec = element.rectangle()
-        mouse.click(coords=(int(rec.left + offset_x), int(rec.top + offset_y)))
+        if not double_click:
+            mouse.click(coords=(int(rec.left + offset_x), int(rec.top + offset_y)))
+        else:
+            mouse.double_click(coords=(int(rec.left + offset_x), int(rec.top + offset_y)))
     
 
         
     def _get_rec(self, window : WindiaWindows):
-        dlg = None
-        match window:
-            case  WindiaWindows.LEISTUNGS_NACHWEIS:
-                dlg = self.get_separate_window(self.cur_selected_patient)
-            case  WindiaWindows.PATIENT:
-                dlg = self.get_sub_window(ARBEITSBEREICH, PATIENT_DLG_STRING)
-            case WindiaWindows.CATALOG:
-                dlg = self.get_sub_window(ARBEITSBEREICH, CATALOG_DLG_STRING)
-            case WindiaWindows.CARE_DEGREE_HISTORY:
-                dlg = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
-            case WindiaWindows.WINDIA:
-                pass
-        if not dlg:
-            return
-        wait_until(5, 0.1, dlg.is_enabled)
+        dlg = self.get_and_wait_for_window(window, 5)
         return dlg.rectangle() if dlg else None
 
     def select_patient(self, windia, patient_firstname, patient_surname):
@@ -194,17 +183,22 @@ class AutomationManager:
     def close_window(self):
         self.windia.SchließenButton.invoke()
 
-    def click_button(self, button : Enum):
-        if button == PatientAutoID.PG_HISTORY_TOOLBAR:
+    def click_button(self, button : Enum, double_click = False):
+        if button == PatientAutoID.PG_HISTORY_TOOLBAR_NEW or button == PatientAutoID.PG_HISTORY_TOOLBAR_SAFE or button == PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE:
             pg_window = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
+            rec = pg_window.rectangle()
             new_button = self.get_child_by_classname(pg_window,"AfxWnd40")
-            self.click_on_top_left_corner(new_button, 10,10)
+            x_offset = -button.value if rec.left <= DIST_TO_SECOND_MONITOR else -button.value * 0.77
+            self.click_on_top_left_corner(new_button, x_offset ,20, double_click)
             return
-        
-        get_wrapper(button, self.windia).click()
+        if not double_click:
+            get_wrapper(button, self.windia).click()
+        else:
+            get_wrapper(button, self.windia).double_click()
 
     def find_win32_window(self, w_title : str):
         dialog = Desktop(backend="win32").window(title=w_title)
+        wait_until(5, 0.1, dialog.is_enabled)
         return dialog.wrapper_object()
 
     def get_child_by_classname(self, element, classname : str):
@@ -214,7 +208,48 @@ class AutomationManager:
             
     def set_pg(self, date : str, pg : str):
         dialog = Desktop(backend="win32").window(title=DEG_OF_CARE_WINDOW_TITLE)
-        dialog.Edit0.wrapper_object().set_text(str(pg))  #PG
-        dialog.Edit2.wrapper_object().set_text(str(date)) #seit
+        rec = dialog.wrapper_object().rectangle()
 
 
+
+        for c in dialog.descendants():
+
+            pg_y_dist = 324
+            pg_x_dist = 330
+            date_x_dist = 161
+            date_y_dist = 320
+            #very hacky, but names keep changing, had to work with image recogniion to find the edit fields instead
+            if c.friendly_class_name() == "Edit" and c.is_visible() == True:                
+                if self.check_if_element_in_correct_position(c.rectangle(), rec, pg_x_dist, pg_y_dist):
+                    c.set_text(str(pg))
+                if self.check_if_element_in_correct_position(c.rectangle(), rec, date_x_dist, date_y_dist):
+                    c.set_text(str(date))
+    
+
+    def check_if_element_in_correct_position(self, element_rec, window_rec, x_distance, y_distance):
+        delta = 80
+        x_dist = abs(element_rec.left - window_rec.left)
+        y_dist = abs(element_rec.top - window_rec.top)
+        if abs(x_dist - x_distance) < delta  and abs(y_dist - y_distance) < delta:
+            return True
+        return False
+
+    def get_and_wait_for_window(self, window : WindiaWindows, wait_time : float):
+        match window:
+            case  WindiaWindows.LEISTUNGS_NACHWEIS:
+                dlg = self.get_separate_window(self.cur_selected_patient)
+            case  WindiaWindows.PATIENT:
+                dlg = self.get_sub_window(ARBEITSBEREICH, PATIENT_DLG_STRING)
+            case WindiaWindows.CATALOG:
+                dlg = self.get_sub_window(ARBEITSBEREICH, CATALOG_DLG_STRING)
+            case WindiaWindows.CARE_DEGREE_HISTORY:
+                dlg = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
+            case WindiaWindows.WINDIA:
+                pass
+        if not dlg:
+            return
+        try:
+            wait_until(wait_time, 0.1, dlg.is_enabled)
+        except:
+            pass
+        return dlg

@@ -12,6 +12,7 @@ INSURANCE_P_DROPDOWN_TITLE = "Pflegeversicherung   ja / nein"
 PFLICHT_CHECKBOX_TITLE = "nur Pflichtbesuch"
 PRAXISEINSATZ_TEXT = "Praxiseinsatz *: allg. ambulante Akut- und Langzeitpflege"
 
+
 class WindiaManager:
     
     patient_data = None
@@ -145,10 +146,18 @@ class WindiaManager:
             return
         
         self.autoManager.click_button(PatientAutoID.PG_BUTTON)
-        #self.autoManager.set_pg(date, deg)
-    
+        print("click")
+        self.autoManager.get_and_wait_for_window(WindiaWindows.CARE_DEGREE_HISTORY, 5)
+        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_NEW)
+        time.sleep(1.5)
+        self.autoManager.set_pg(date, deg)
+        time.sleep(1.5)
+        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_SAFE)
+        time.sleep(1.5)
+        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE)
+
     def test(self):
-        pass
+        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_SAFE)
 
         
 
@@ -159,5 +168,5 @@ W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "
 #W.add_new_patient()
 #W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
 #W.change_gebuerenkatalog()
-W.add_new_degree_of_care(2, "12.01.2022")
-
+W.add_new_degree_of_care(4, "14.01.2021")
+#W.test()
