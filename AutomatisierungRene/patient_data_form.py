@@ -59,22 +59,7 @@ def get_enum_from_field(name):
                 return PatientAutoID.ADMISSION_DATE
             case "GENDER":
                 return PatientAutoID.GENDER
-
-    
-
-@dataclass
-class Invoice:
-    """Class for keeping track of Patine/School invoice data"""
-    anrede :str
-    name_1 : str
-    name_2 : str #second line in invoice letter
-    street : str
-    zip : str
-    city : str
-    
-    def get_enum_from_field(self, name : str):
-        upper = "INVOICE_" + name.upper()
-        match upper:
+            
             case "INVOICE_ANREDE":
                 return PatientAutoID.INVOICE_ANREDE
             case "INVOICE_NAME_1":
@@ -87,6 +72,21 @@ class Invoice:
                 return PatientAutoID.INVOICE_ZIP
             case "INVOICE_CITY":
                 return PatientAutoID.INVOICE_CITY
+
+    
+
+@dataclass
+class Invoice:
+    """Class for keeping track of Patine/School invoice data"""
+    invoice_anrede :str
+    invoice_name_1 : str
+    invoice_name_2 : str
+    invoice_street : str
+    invoice_zip : str
+    invoice_city : str
+    
+
+            
     
 
 

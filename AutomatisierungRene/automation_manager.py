@@ -9,6 +9,7 @@ from windia_ids import *
 from element_selection import *
 from patient_data_form import get_enum_from_field
 
+
 ARBEITSBEREICH = "Arbeitsbereich"
 DEG_OF_CARE_WINDOW_TITLE = "Pflegestufenhistorie"
 WINDIA_DLG_STRING = "WinDIA® AMBULINO GmbH"
@@ -74,29 +75,35 @@ class AutomationManager:
             
     def open_window(self, window : WindiaWindows):
         self.windia.set_focus()
+        dlg = None
         match window:
             case  WindiaWindows.LEISTUNGS_NACHWEIS:
                 keyboard.send_keys("^L") 
+                self.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 60)
+                time.sleep(5)
             case  WindiaWindows.PATIENT:
                 keyboard.send_keys("%{s}{p}")
+                self.get_and_wait_for_window(WindiaWindows.PATIENT, 10)
             case WindiaWindows.CATALOG:
                 keyboard.send_keys("^G")
+                self.get_and_wait_for_window(WindiaWindows.CATALOG, 5)
             case WindiaWindows.WINDIA:
                 pass
+        
                     
     def _click_popup_window_away(self, id):
         sub_windows = self.windia.children()
         
         for window in sub_windows:
-            if WINDIA_DLG_STRING == window.window_text():
+            if "windia" == window.window_text():
                 no_btn = self.windia.child_window(auto_id=str(id), control_type="Button").wrapper_object()
                 no_btn.invoke()
         
     def click_inside_window(self, window : WindiaWindows, left_percent, top_percent, click = True):
         
         win_rectangle = self._get_rec(window)
-        width = win_rectangle.right - win_rectangle.left
-        height = win_rectangle.bottom - win_rectangle.top
+        width = abs(win_rectangle.right - win_rectangle.left)
+        height = abs(win_rectangle.bottom - win_rectangle.top)
         x = win_rectangle.left + width * (left_percent)
         y = win_rectangle.top + height * (top_percent)
         if click:
@@ -196,9 +203,13 @@ class AutomationManager:
         else:
             get_wrapper(button, self.windia).double_click()
 
-    def find_win32_window(self, w_title : str):
+    def find_win32_window(self, w_title : str, dont_wrap = False):
         dialog = Desktop(backend="win32").window(title=w_title)
+        #print(dialog.print_control_identifiers())
         wait_until(5, 0.1, dialog.is_enabled)
+
+        if dont_wrap:
+            return dialog
         return dialog.wrapper_object()
 
     def get_child_by_classname(self, element, classname : str):

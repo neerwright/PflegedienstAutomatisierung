@@ -1,5 +1,5 @@
 from automation_manager import *
-from patient_data_form import Patient, PatientInsuranceInfo
+from patient_data_form import Patient, PatientInsuranceInfo, Invoice
 from windia_ids import WindiaWindows
 from dataclasses import dataclass, fields
 from windia_ids import *
@@ -22,6 +22,7 @@ class WindiaManager:
     patient_invoice = None
     autoManager = None
     
+
     def __init__(self):
         self.autoManager = AutomationManager()
         
@@ -74,7 +75,7 @@ class WindiaManager:
         if self.patient_invoice is not None:
             self.switch_patient_tab(PatientWindowTabs.RECHNUNG)
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
-            self._rechnung(self)
+            self._rechnung()
             self._save_new_patient() #save patient/student
             return
 
@@ -117,6 +118,10 @@ class WindiaManager:
     def _rechnung(self):
         
         for field in fields(self.patient_invoice):
+            if field.name == "invoice_anrede":
+                self.autoManager.select_from_dropdown(get_enum_from_field(field.name) ,  getattr(self.patient_invoice, field.name))
+                continue
+            print(field.name)
             self.autoManager.input_text(field.name, getattr(self.patient_invoice, field.name))
             
             
@@ -151,7 +156,8 @@ class WindiaManager:
             self.autoManager.input_text(CatalogAutoID.NUMBER, str(i))
             self.autoManager.input_text(CatalogAutoID.ROW, str(i))
 
-            self.autoManager.click_inside_window(WindiaWindows.CATALOG, 5/9 , 9/10) #Save btn   
+            self.autoManager.click_inside_window(WindiaWindows.CATALOG, 5/9 , 9/10) #Save btn 
+            time.sleep(0.1)  
             self.autoManager._click_popup_window_away("7")
 
         
@@ -171,9 +177,10 @@ class WindiaManager:
         input_hours_for_bill()
         
     def _save_new_patient(self):
-        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/11 , 9/10)
-        self.autoManager.cur_selected_patient = str(getattr(self.patient_data, "name")) + " " + str(getattr(self.patient_data, "surname"))
-        print ("cur patient: ") + str(self.autoManager.cur_selected_patient)
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 5/12 , 9/10)
+        self.autoManager.cur_selected_patient = (self.patient_data.name) + ", " + (self.patient_data.surname)
+        if self.autoManager.cur_selected_patient:
+            print ("cur patient: " + self.autoManager.cur_selected_patient)
 
     def _edit_patient(self):
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/10 , 9/10)
@@ -244,12 +251,29 @@ class WindiaManager:
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
-W.patient_data = Patient("name3", "surname3", "M" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
-W.patient_insurance_data = PatientInsuranceInfo(  "F1121213", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
-W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
-W.add_new_patient()
+W.patient_data = Patient("name4", "surname4", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
+W.patient_insurance_data = PatientInsuranceInfo(  "XX", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
+W.catalog_data = Catalog("10,76", ["29.04.2024 - 06.09.2024", "21.14.2024 - 29.11.2024"] , ["210,15", "218,7"])
+#W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
+W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
 
 
+#W.autoManager.open_window(WindiaWindows.PATIENT)
+#W.add_new_patient()
+#W.autoManager.close_window()
+#W.autoManager.open_window(WindiaWindows.CATALOG)
 #W.change_gebuerenkatalog()
+#W.autoManager.close_window()
+W.autoManager.cur_selected_patient = "name4, surname4"
+#W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
+input_hours_for_bill(W.autoManager, 200)
 #W.add_new_degree_of_care(4, "14.01.2021")
 #W.input_insurance_p()
+
+
+#Aspect ratios
+#1.940 / 1.050
+#1,847619047619048
+
+#1.876 / 1.040
+#= 1,8038

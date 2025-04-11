@@ -47,7 +47,7 @@ class PatientAutoID(Enum):
     GENDER = -1
     INVOICE_ANREDE = 92
     INVOICE_NAME_1 = 89
-    INVOICE_NAME_2 = 81
+    INVOICE_NAME_2 = 91
     INVOICE_STREET = 88
     INVOICE_ZIP = 87
     INVOICE_CITY = 86
