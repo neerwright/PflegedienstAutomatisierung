@@ -24,15 +24,7 @@ class WindiaManager:
     def __init__(self):
         self.autoManager = AutomationManager()
         
-
-    
-    def add_new_patient(self):
-        
-        #click NEW
-        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
-
-        
-        #input patient info
+    def input_stamm(self):
         if not self.patient_data:
             raise Exception("set_patient_data() need to be called before a new patient is added")
         
@@ -44,36 +36,62 @@ class WindiaManager:
                 continue
             
             self.autoManager.input_text(field.name, getattr(self.patient_data, field.name))
-            
+         
+    def input_insurance(self, i_dropdown : PatientAutoID, dropdown_title : str, insurance : str, insurance_number = None):
+        
+        
+        self.autoManager.select_from_dropdown(i_dropdown , insurance, dropdown_title)
+        if insurance_number:
+            self.autoManager.input_text(PatientAutoID.INSURANVE_NUMBER, insurance_number)
+    
+    def add_new_patient(self):
+        
+        #click NEW
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
+
+        #input patient info
+        self.input_stamm()   
             
         #----------------Krankenkasse-------------------------#
-        self.autoManager.click_inside_window(WindiaWindows.PATIENT,4/9 , 3/13)
+        self.switch_patient_tab(PatientWindowTabs.KRANKENKASSE)
+        self.input_insurance(self, PatientAutoID.INSURANCE_DROPDOWN , INSURANCE_K_DROPDOWN_TITLE , self.patient_data.k_insurance , self.patient_data.insurance_number)
         
-        
-        self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_DROPDOWN , self.patient_data.k_insurance, INSURANCE_K_DROPDOWN_TITLE)
-        self.autoManager.input_text(PatientAutoID.INSURANVE_NUMBER, self.patient_data.insurance_number)
-        
-        #----------------Pflegekasse-------------------------#
-        self.autoManager.click_inside_window(WindiaWindows.PATIENT,4/12 , 3/13)
-        self.autoManager.select_from_dropdown(PatientAutoID.INSURANCE_P_DROPDOWN , self.patient_data.p_insurance, INSURANCE_P_DROPDOWN_TITLE)
-        self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
-        
-        #----------------Rechnung-------------------------#
+        #----------------Rechnung-------------------------##
         if self.patient_invoice is not None:
+            self.switch_patient_tab(PatientWindowTabs.RECHNUNG)
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
             self._rechnung(self)
+            self._save_new_patient() #save patient/student
+            return
 
-        #------Sonstige tab REMARKS
+        #----------------Pflegekasse-------------------------#
+        self.switch_patient_tab(PatientWindowTabs.PFLEGEKASSE)
+        self.input_insurance(self, PatientAutoID.INSURANCE_P_DROPDOWN , INSURANCE_P_DROPDOWN_TITLE , self.patient_data.p_insurance)
+        self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
+        
+        
+
+        #------Sonstige tab REMARKS---------------------
+        self.switch_patient_tab(PatientWindowTabs.SONSTIGES)
         self.autoManager.input_text(PatientAutoID.REMARKS, "Hello")
-        #------Angehörige
+
+        #------Angehörige----------
+        self.switch_patient_tab(PatientWindowTabs.ANGEHORIGE)
         # click New inside tab
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,1/15 , 10/13)
         self.autoManager.input_text(RelativesAutoID.NAME, "Hello")
         self.autoManager.input_text(RelativesAutoID.SURNAME, "Hello2")
         self.autoManager.input_text(RelativesAutoID.TELEPHONE, "0127512234")
 
-        #SAVE
-        #self._save_new_patient()
+        #-----PFLEGE--------
+        self.switch_patient_tab(PatientWindowTabs.PFLEGE)
+        self.select_docotor("Hölle", 1)
+        
+        
+        #------End on Diagnosis tab ---------
+        return 
+
+
             
             
     def _rechnung(self):
