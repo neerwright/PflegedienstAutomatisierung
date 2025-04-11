@@ -14,7 +14,11 @@ class CatalogAutoID(Enum):
     PRICE = 80
     NUMBER = 85
     ROW = 67
-    
+class RelativesAutoID(Enum):
+    NAME = 23
+    SURNAME = 22
+    TELEPHONE = 18
+    CLOSE_BTN = 7
     
 class PatientAutoID(Enum):
     NAME = 193
@@ -42,6 +46,8 @@ class PatientAutoID(Enum):
     INSURANCE_P_DROPDOWN = 39
     DOC_DROPDOWN_1 = 67
     DOC_DROPDOWN_2 = 70
+
+    REMARKS = 50
 
     LEISTUNG = 6
 

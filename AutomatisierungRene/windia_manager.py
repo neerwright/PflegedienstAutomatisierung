@@ -63,6 +63,15 @@ class WindiaManager:
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
             self._rechnung(self)
 
+        #------Sonstige tab REMARKS
+        self.autoManager.input_text(PatientAutoID.REMARKS, "Hello")
+        #------Angehörige
+        # click New inside tab
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT,1/15 , 10/13)
+        self.autoManager.input_text(RelativesAutoID.NAME, "Hello")
+        self.autoManager.input_text(RelativesAutoID.SURNAME, "Hello2")
+        self.autoManager.input_text(RelativesAutoID.TELEPHONE, "0127512234")
+
         #SAVE
         #self._save_new_patient()
             
@@ -157,7 +166,8 @@ class WindiaManager:
         self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE)
 
     def test(self):
-        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_SAFE)
+        
+        self.autoManager.click_button(RelativesAutoID.CLOSE_BTN)
 
         
 
@@ -168,5 +178,5 @@ W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "
 #W.add_new_patient()
 #W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
 #W.change_gebuerenkatalog()
-W.add_new_degree_of_care(4, "14.01.2021")
-#W.test()
+#W.add_new_degree_of_care(4, "14.01.2021")
+W.test()
