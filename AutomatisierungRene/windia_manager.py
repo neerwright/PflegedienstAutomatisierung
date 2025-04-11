@@ -123,6 +123,9 @@ class WindiaManager:
                 continue
             print(field.name)
             self.autoManager.input_text(field.name, getattr(self.patient_invoice, field.name))
+        self.autoManager.cur_selected_patient = (self.patient_data.name) + ", " + (self.patient_data.surname)
+        if self.autoManager.cur_selected_patient:
+            print ("cur patient: " + self.autoManager.cur_selected_patient)
             
             
     def  change_gebuerenkatalog(self):
@@ -251,29 +254,18 @@ class WindiaManager:
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
-W.patient_data = Patient("name4", "surname4", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
+W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
 W.patient_insurance_data = PatientInsuranceInfo(  "XX", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
 W.catalog_data = Catalog("10,76", ["29.04.2024 - 06.09.2024", "21.14.2024 - 29.11.2024"] , ["210,15", "218,7"])
 #W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
 W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
 
 
-#W.autoManager.open_window(WindiaWindows.PATIENT)
-#W.add_new_patient()
-#W.autoManager.close_window()
-#W.autoManager.open_window(WindiaWindows.CATALOG)
-#W.change_gebuerenkatalog()
-#W.autoManager.close_window()
-W.autoManager.cur_selected_patient = "name4, surname4"
-#W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
+W.autoManager.open_window(WindiaWindows.PATIENT)
+W.add_new_patient()
+W.autoManager.close_window()
+W.autoManager.open_window(WindiaWindows.CATALOG)
+W.change_gebuerenkatalog()
+W.autoManager.close_window()
+W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
 input_hours_for_bill(W.autoManager, 200)
-#W.add_new_degree_of_care(4, "14.01.2021")
-#W.input_insurance_p()
-
-
-#Aspect ratios
-#1.940 / 1.050
-#1,847619047619048
-
-#1.876 / 1.040
-#= 1,8038

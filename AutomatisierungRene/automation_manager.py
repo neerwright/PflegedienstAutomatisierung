@@ -80,7 +80,7 @@ class AutomationManager:
             case  WindiaWindows.LEISTUNGS_NACHWEIS:
                 keyboard.send_keys("^L") 
                 self.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 60)
-                time.sleep(5)
+                time.sleep(10)
             case  WindiaWindows.PATIENT:
                 keyboard.send_keys("%{s}{p}")
                 self.get_and_wait_for_window(WindiaWindows.PATIENT, 10)
