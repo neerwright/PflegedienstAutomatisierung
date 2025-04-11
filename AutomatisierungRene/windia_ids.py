@@ -7,6 +7,16 @@ class WindiaWindows(Enum):
     CATALOG = 3
     CARE_DEGREE_HISTORY = 4
 
+class PatientWindowTabs(Enum):
+    STAMM = 0
+    PFLEGE = 1
+    SONSTIGES = 3
+    PFLEGEKASSE = 2
+    ADRESSEN = 5
+    KRANKENKASSE =4
+    ANGEHORIGE = 7
+    RECHNUNG = 6
+
 class CatalogAutoID(Enum):
     MAIN_DROPDOWN = 52
     PRAXIS_DROPDOWN = 83

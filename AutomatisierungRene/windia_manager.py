@@ -17,7 +17,7 @@ class WindiaManager:
     
     patient_data = None
     catalog_data = None
-    
+    switched = False
     patient_invoice = None
     autoManager = None
     
@@ -166,10 +166,39 @@ class WindiaManager:
         self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE)
 
     def test(self):
-        
-        self.autoManager.click_button(RelativesAutoID.CLOSE_BTN)
+        pass
+
+    def switch_patient_tab(self,tab : PatientWindowTabs):
+        place = tab.value
+        if self.switched:
+            if place % 2 == 0:
+                place += 1
+            else:
+                place -=1
+
+        x,y = 0,0
+        if place % 2 == 0:
+            y = 3/13
+            self.switched = False if not self.switched else True
+        else:
+            y = 3/15
+            self.switched = True if not self.switched else False
 
         
+        if place == 0 or place == 1:
+            x = 1/10
+        if place == 2 or place == 3:
+            x = 3/10     
+        if place == 4 or place == 5:
+            x = 4/9
+        if place == 6 or place == 7:
+            x = 7/10
+            
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y, False)
+            
+
+                
+
 
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
@@ -179,4 +208,3 @@ W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "
 #W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
 #W.change_gebuerenkatalog()
 #W.add_new_degree_of_care(4, "14.01.2021")
-W.test()
