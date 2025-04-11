@@ -15,6 +15,7 @@ DEG_OF_CARE_WINDOW_TITLE = "Pflegestufenhistorie"
 WINDIA_DLG_STRING = "WinDIA® AMBULINO GmbH"
 PATIENT_DLG_STRING = "Patient"
 CATALOG_DLG_STRING = "Erfassung Gebührenkatalog"
+AUSDRUCK_LN__DLG_STRING = " Ausgabe Leistungsnachweis"
 DIST_TO_SECOND_MONITOR = 750
 
 class AutomationManager:
@@ -87,6 +88,8 @@ class AutomationManager:
             case WindiaWindows.CATALOG:
                 keyboard.send_keys("^G")
                 self.get_and_wait_for_window(WindiaWindows.CATALOG, 5)
+            case WindiaWindows.AUSDRUCK_LN:
+                self.get_and_wait_for_window(WindiaWindows.AUSDRUCK_LN, 10)
             case WindiaWindows.WINDIA:
                 pass
         
@@ -255,6 +258,9 @@ class AutomationManager:
                 dlg = self.get_sub_window(ARBEITSBEREICH, CATALOG_DLG_STRING)
             case WindiaWindows.CARE_DEGREE_HISTORY:
                 dlg = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
+            case WindiaWindows.AUSDRUCK_LN:
+                dlg = self.get_sub_window(self.AUSDRUCK_LN__DLG_STRING)
+
             case WindiaWindows.WINDIA:
                 pass
         if not dlg:

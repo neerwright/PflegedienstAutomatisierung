@@ -6,6 +6,7 @@ class WindiaWindows(Enum):
     PATIENT = 2
     CATALOG = 3
     CARE_DEGREE_HISTORY = 4
+    AUSDRUCK_LN = 5
 
 class PatientWindowTabs(Enum):
     STAMM = 0
@@ -68,3 +69,5 @@ class PatientAutoID(Enum):
     PG_HISTORY_TOOLBAR_SAFE = -110
     PG_HISTORY_TOOLBAR_CLOSE = -290
 
+class WindiaButtons(Enum):
+    AUDRUCK_LN_PRINT = 88
