@@ -1,5 +1,5 @@
 from automation_manager import *
-from patient_data_form import Patient
+from patient_data_form import Patient, PatientInsuranceInfo
 from windia_ids import WindiaWindows
 from dataclasses import dataclass, fields
 from windia_ids import *
@@ -16,6 +16,7 @@ PRAXISEINSATZ_TEXT = "Praxiseinsatz *: allg. ambulante Akut- und Langzeitpflege"
 class WindiaManager:
     
     patient_data = None
+    patient_insurance_data = None
     catalog_data = None
     switched = False
     patient_invoice = None
@@ -25,11 +26,11 @@ class WindiaManager:
         self.autoManager = AutomationManager()
         
     def input_stamm(self):
-        if not self.patient_data:
-            raise Exception("set_patient_data() need to be called before a new patient is added")
+        if not self.patient_data or not self.patient_insurance_data:
+            raise Exception("patient_data needs to be filled before a new patient is added")
         
         for field in fields(self.patient_data):
-            if field.name == "k_insurance" or field.name == "p_insurance" or  field.name == "insurance_number" or field.name == "anrede":
+            if field.name == "anrede" :
                 continue
             if field.name == "gender":
                 self.autoManager.select_gender(getattr(self.patient_data, field.name))
@@ -37,13 +38,25 @@ class WindiaManager:
             
             self.autoManager.input_text(field.name, getattr(self.patient_data, field.name))
          
-    def input_insurance(self, i_dropdown : PatientAutoID, dropdown_title : str, insurance : str, insurance_number = None):
+    def input_insurance(self, i_dropdown : PatientAutoID, insurance : str, dropdown_title : str, insurance_number = None):
         
         
         self.autoManager.select_from_dropdown(i_dropdown , insurance, dropdown_title)
         if insurance_number:
             self.autoManager.input_text(PatientAutoID.INSURANVE_NUMBER, insurance_number)
-    
+
+    def input_insurance_p(self):
+        self.input_insurance( i_dropdown=PatientAutoID.INSURANCE_P_DROPDOWN  ,insurance=self.patient_insurance_data.p_insurance , dropdown_title= INSURANCE_P_DROPDOWN_TITLE )
+        if self.patient_insurance_data.pflicht_leistung:
+            self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
+        #-- save and edit to change degree of care
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 5/12 , 9/10)
+        time.sleep(0.1)
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/9 , 9/10)
+        time.sleep(0.2)
+        self.add_new_degree_of_care(self.patient_insurance_data.care_degree, self.patient_insurance_data.degree_since_date)
+
+
     def add_new_patient(self):
         
         #click NEW
@@ -54,7 +67,7 @@ class WindiaManager:
             
         #----------------Krankenkasse-------------------------#
         self.switch_patient_tab(PatientWindowTabs.KRANKENKASSE)
-        self.input_insurance(self, PatientAutoID.INSURANCE_DROPDOWN , INSURANCE_K_DROPDOWN_TITLE , self.patient_data.k_insurance , self.patient_data.insurance_number)
+        self.input_insurance(self, PatientAutoID.INSURANCE_DROPDOWN , INSURANCE_K_DROPDOWN_TITLE , self.patient_insurance_data.k_insurance , self.patient_insurance_data.insurance_number)
         
         #----------------Rechnung-------------------------##
         if self.patient_invoice is not None:
@@ -66,26 +79,32 @@ class WindiaManager:
 
         #----------------Pflegekasse-------------------------#
         self.switch_patient_tab(PatientWindowTabs.PFLEGEKASSE)
-        self.input_insurance(self, PatientAutoID.INSURANCE_P_DROPDOWN , INSURANCE_P_DROPDOWN_TITLE , self.patient_data.p_insurance)
-        self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
-        
+        self.input_insurance_p()
         
 
         #------Sonstige tab REMARKS---------------------
         self.switch_patient_tab(PatientWindowTabs.SONSTIGES)
-        self.autoManager.input_text(PatientAutoID.REMARKS, "Hello")
+        self.autoManager.input_text(PatientAutoID.REMARKS, self.patient_insurance_data.misc)
 
         #------Angehörige----------
         self.switch_patient_tab(PatientWindowTabs.ANGEHORIGE)
         # click New inside tab
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,1/15 , 10/13)
-        self.autoManager.input_text(RelativesAutoID.NAME, "Hello")
-        self.autoManager.input_text(RelativesAutoID.SURNAME, "Hello2")
-        self.autoManager.input_text(RelativesAutoID.TELEPHONE, "0127512234")
+        if len(self.patient_insurance_data.relative1) >= 1:
+            self.autoManager.input_text(RelativesAutoID.NAME, self.patient_insurance_data.relative1[0])
+        if len(self.patient_insurance_data.relative1) >= 2:
+            self.autoManager.input_text(RelativesAutoID.SURNAME, self.patient_insurance_data.relative1[1])
+        if len(self.patient_insurance_data.relative1) >= 3:
+            self.autoManager.input_text(RelativesAutoID.TELEPHONE, self.patient_insurance_data.relative1[2])
 
         #-----PFLEGE--------
         self.switch_patient_tab(PatientWindowTabs.PFLEGE)
-        self.select_docotor("Hölle", 1)
+        doc1 = self.patient_insurance_data.doc1
+        doc2 = self.patient_insurance_data.doc2
+        if doc1:
+            self.select_docotor(doc1, 1)
+        if doc2:
+            self.select_docotor(doc2, 2)
         
         
         #------End on Diagnosis tab ---------
@@ -167,7 +186,7 @@ class WindiaManager:
         else:
             self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_2 , doc)    
     
-    def add_new_degree_of_care(self, deg : int, date : str):
+    def inout_degree_of_care(self, deg : int, date : str, new = False):
         if not ( 1 <= deg <= 5 ):
             print ("Pflegegrad muss zwischen 1 und 5 sein")
             return
@@ -175,7 +194,10 @@ class WindiaManager:
         self.autoManager.click_button(PatientAutoID.PG_BUTTON)
         print("click")
         self.autoManager.get_and_wait_for_window(WindiaWindows.CARE_DEGREE_HISTORY, 5)
-        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_NEW)
+        if new:
+            self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_NEW)
+        else: 
+            self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_EDIT)
         time.sleep(1.5)
         self.autoManager.set_pg(date, deg)
         time.sleep(1.5)
@@ -183,8 +205,7 @@ class WindiaManager:
         time.sleep(1.5)
         self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE)
 
-    def test(self):
-        pass
+    
 
     def switch_patient_tab(self,tab : PatientWindowTabs):
         place = tab.value
@@ -216,13 +237,17 @@ class WindiaManager:
             
 
                 
-
+    def test(self):
+        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_EDIT)
 
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
-W.patient_data = Patient("name", "surname", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "W", "07.04.2025", "", "09.04.2025", "XX", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P")
+W.patient_data = Patient("name1", "surname1", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "M", "07.04.2025", "", "09.04.2025")
+W.patient_insurance_data = PatientInsuranceInfo(  "F1121213", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
 #W.add_new_patient()
 #W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
 #W.change_gebuerenkatalog()
 #W.add_new_degree_of_care(4, "14.01.2021")
+#W.input_insurance_p()
+W.test()

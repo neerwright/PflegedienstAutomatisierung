@@ -17,10 +17,19 @@ class Patient:
     care_beginning_date: str
     care_end_date: str
     admission_date : str
+    
+@dataclass
+class PatientInsuranceInfo():
     insurance_number : str
     k_insurance: str
     p_insurance: str
- 
+    care_degree : int
+    degree_since_date : str
+    doc1 : str
+    doc2 : str
+    relative1 : list # [name, surname, tel]
+    misc : str
+    pflicht_leistung : bool
     
 def get_enum_from_field(name):
         upper = name.upper()

@@ -184,7 +184,7 @@ class AutomationManager:
         self.windia.SchließenButton.invoke()
 
     def click_button(self, button : Enum, double_click = False):
-        if button == PatientAutoID.PG_HISTORY_TOOLBAR_NEW or button == PatientAutoID.PG_HISTORY_TOOLBAR_SAFE or button == PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE:
+        if button == PatientAutoID.PG_HISTORY_TOOLBAR_NEW or button == PatientAutoID.PG_HISTORY_TOOLBAR_SAFE or button == PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE or button == PatientAutoID.PG_HISTORY_TOOLBAR_EDIT:
             pg_window = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
             rec = pg_window.rectangle()
             new_button = self.get_child_by_classname(pg_window,"AfxWnd40")
