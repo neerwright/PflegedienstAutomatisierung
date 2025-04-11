@@ -33,7 +33,7 @@ class RelativesAutoID(Enum):
 class PatientAutoID(Enum):
     NAME = 193
     SURNAME = 192
-    BIRTHDAY = 165
+    BIRTHDAY = 168
     ANREDE = 150
     STREET = 157
     ZIP = 158

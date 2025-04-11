@@ -54,7 +54,7 @@ class WindiaManager:
         time.sleep(0.1)
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/9 , 9/10)
         time.sleep(0.2)
-        self.add_new_degree_of_care(self.patient_insurance_data.care_degree, self.patient_insurance_data.degree_since_date)
+        self.input_degree_of_care(self.patient_insurance_data.care_degree, self.patient_insurance_data.degree_since_date)
 
 
     def add_new_patient(self):
@@ -64,10 +64,11 @@ class WindiaManager:
 
         #input patient info
         self.input_stamm()   
-            
+        
         #----------------Krankenkasse-------------------------#
         self.switch_patient_tab(PatientWindowTabs.KRANKENKASSE)
-        self.input_insurance(self, PatientAutoID.INSURANCE_DROPDOWN , INSURANCE_K_DROPDOWN_TITLE , self.patient_insurance_data.k_insurance , self.patient_insurance_data.insurance_number)
+        time.sleep(0.5)
+        self.input_insurance( PatientAutoID.INSURANCE_DROPDOWN , self.patient_insurance_data.k_insurance,  INSURANCE_K_DROPDOWN_TITLE , self.patient_insurance_data.insurance_number)
         
         #----------------Rechnung-------------------------##
         if self.patient_invoice is not None:
@@ -85,7 +86,7 @@ class WindiaManager:
         #------Sonstige tab REMARKS---------------------
         self.switch_patient_tab(PatientWindowTabs.SONSTIGES)
         self.autoManager.input_text(PatientAutoID.REMARKS, self.patient_insurance_data.misc)
-
+        
         #------Angehörige----------
         self.switch_patient_tab(PatientWindowTabs.ANGEHORIGE)
         # click New inside tab
@@ -186,7 +187,7 @@ class WindiaManager:
         else:
             self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_2 , doc)    
     
-    def inout_degree_of_care(self, deg : int, date : str, new = False):
+    def input_degree_of_care(self, deg : int, date : str, new = False):
         if not ( 1 <= deg <= 5 ):
             print ("Pflegegrad muss zwischen 1 und 5 sein")
             return
@@ -233,7 +234,7 @@ class WindiaManager:
         if place == 6 or place == 7:
             x = 7/10
             
-        self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y, False)
+        self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y)
             
 
                 
@@ -243,11 +244,12 @@ class WindiaManager:
 W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
-W.patient_data = Patient("name1", "surname1", "15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "M", "07.04.2025", "", "09.04.2025")
+W.patient_data = Patient("name3", "surname3", "M" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
 W.patient_insurance_data = PatientInsuranceInfo(  "F1121213", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
-#W.add_new_patient()
-#W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
+W.catalog_data = Catalog("10,75", ["29.04.2024 - 06.09.2024", "21.10.2024 - 29.11.2024"] , ["220,05", "218,7"])
+W.add_new_patient()
+
+
 #W.change_gebuerenkatalog()
 #W.add_new_degree_of_care(4, "14.01.2021")
 #W.input_insurance_p()
-W.test()

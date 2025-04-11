@@ -7,13 +7,14 @@ class Patient:
     """Class for keeping track of Patient data"""
     name: str
     surname: str
+    gender: str
     birthday: str
     anrede: str
     street: str
     zip: str
     city: str
     telephone: str
-    gender: str 
+     
     care_beginning_date: str
     care_end_date: str
     admission_date : str
@@ -44,24 +45,21 @@ def get_enum_from_field(name):
                 return PatientAutoID.ANREDE
             case "STREET":
                 return PatientAutoID.STREET
-            case "STREET":
-                return PatientAutoID.STREET
             case "ZIP":
                 return PatientAutoID.ZIP
             case "CITY":
                 return PatientAutoID.CITY
             case "TELEPHONE":
                 return PatientAutoID.TELEPHONE
-            case "BEGINNING_DATE":
+            case "CARE_BEGINNING_DATE":
                 return PatientAutoID.BEGINNING_DATE
-            case "END_DATE":
+            case "CARE_END_DATE":
                 return PatientAutoID.END_DATE
             case "ADMISSION_DATE":
                 return PatientAutoID.ADMISSION_DATE
             case "GENDER":
                 return PatientAutoID.GENDER
-            case "INSURANCE_NUMBER":
-                return PatientAutoID.INSURANVE_NUMBER
+
     
 
 @dataclass
