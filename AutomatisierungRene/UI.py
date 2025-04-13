@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import filedialog
 
 def invoice_ui():
     pass
@@ -7,6 +8,7 @@ def setup():
     root = Tk()
     root.title("WindiaAutomation")
     #root.iconbitmap("")
+    root.geometry("500x500")
     return root
     
 def create_frame(root, ):
@@ -28,5 +30,7 @@ def clicked(root, val):
     myLabel = Label(root, text=str(val))
     myLabel.pack()
 
+def open_file_dialog(root):
+    root.filename = filedialog.askopenfilename(initialdir="", title="")
 
 ui_start()
