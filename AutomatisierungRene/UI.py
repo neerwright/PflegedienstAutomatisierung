@@ -197,7 +197,6 @@ def setup():
     root = ThemedTk()
     style(root)
     root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
-    #PflegedienstAutomatisierung\AutomatisierungRene\ambIcon.ico
     root.title("Windia Automation")
     root.geometry("500x700")
     return root
@@ -224,10 +223,8 @@ def clicked_menu_item(frame, number):
     
 def ui_start():
     root = setup()
-    #radio_button(root)
-    #invoice_ui(root)
     menuFrame, formFrame = main_menu(root)
-    #add_patient_ui(root)
+
     root.mainloop()
 
 
@@ -246,10 +243,7 @@ def open_file_dialog(root):
 def style(root):
     style = ttk.Style(root)
     style.theme_use("ubuntu")
-    #style.configure("ttk.Label", foreground="black", background="blue")
-    #style.configure("BW.TLabel", foreground="black", background="white")
-    #print(root.get_themes())
-    #yaru, breeze
+
     
     
 ui_start()
