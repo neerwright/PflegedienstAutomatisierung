@@ -5,7 +5,7 @@ from ttkthemes import ThemedTk
 def invoice_ui(root):
   
     studentFrame = LabelFrame(root, text="Student")
-    uniFrame = LabelFrame(root, text = "Uni/Schule")
+    uniFrame = LabelFrame(root, text = "Uni/Schule Abrechnung")
     studentFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
     uniFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
     
@@ -14,14 +14,14 @@ def invoice_ui(root):
     p1Frame.grid(row=2, column=0, padx=20, pady=20, sticky="w")
     p2Frame.grid(row=3, column=0, padx=20, pady=20, sticky="w")
 
-    student_invoice_ui(studentFrame)
-    school_ui(uniFrame)
-    praxiseinsatz_ui(p1Frame)
-    praxiseinsatz_ui(p2Frame)
+    name, surname, bday, gender = student_invoice_ui(studentFrame)
+    school, wage, max_hours = school_ui(uniFrame)
+    start_date1, end_date1, hours1 = praxiseinsatz_ui(p1Frame)
+    start_date2, end_date2, hours2 = praxiseinsatz_ui(p2Frame)
     
     sendFrame = Frame(root)
     sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-    send_button = Button(sendFrame, text="Rechung erstellen starten", background="#5f70b8", foreground="white")
+    send_button = Button(sendFrame, text="Rechung erstellen starten", background="#5f70b8", foreground="white", command=lambda: clicked([name.get(), surname.get(), bday.get(), gender.get(), school.get(), wage.get(), max_hours.get(), start_date1.get(), end_date1.get(), hours1.get(),start_date2.get(), end_date2.get(), hours2.get() ], 0))
     send_button.grid(row=0, column=0)
     
     
@@ -32,14 +32,17 @@ def add_patient_ui(root):
     careFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
     relativeFrame = LabelFrame(root, text = "Angehörige")
     relativeFrame.grid(row=2, column=0, padx=20, pady=20,  sticky="w")
-    stamm_ui(stammFrame)
-    relative_ui(relativeFrame)
-    care_ui(careFrame)
+    
+    city, zip, street, name, surname, bday, gender = stamm_ui(stammFrame)
+    relative_name, relative_surname, relative_tel = relative_ui(relativeFrame)
+    doctor, insurance, insurance_number, care_deg, care_deg_date, geldleistung = care_ui(careFrame)
     
     sendFrame = Frame(root)
     sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-    send_button = Button(sendFrame, text="Neuer Patient anlegen starten", background="#5f70b8", foreground="white")
+    send_button = Button(sendFrame, text="Neuer Patient anlegen starten", background="#5f70b8", foreground="white",  command=lambda: clicked([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.get(), gender.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get()], 1))
     send_button.grid(row=0, column=0)
+    
+    
     
 def care_ui(labelframe):
     doctor = ttk.Label(labelframe, text="Hausarzt: ")
@@ -76,9 +79,11 @@ def care_ui(labelframe):
     g_radio.grid(row=3, column=0)
     k_radio.grid(row=3, column=1)
     
+    return doctor_box, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung
+    
     
 def stamm_ui(labelframe):
-    student_invoice_ui(labelframe)
+    s_name, s_surname, bday, gender = student_invoice_ui(labelframe)
     city = ttk.Label(labelframe, text="Ort: ")
     zip = ttk.Label(labelframe, text="PLZ: ")
     street = ttk.Label(labelframe, text="Straße: ")
@@ -92,6 +97,8 @@ def stamm_ui(labelframe):
     zip_box.grid(row=5, column=1)
     street.grid(row=6, column=0)
     street_box.grid(row=6, column=1)
+    
+    return city_box, zip_box, street_box, s_name, s_surname, bday, gender
     
 def relative_ui(labelFrame):
     relative_name = ttk.Label(labelFrame, text="Name: ")
@@ -110,6 +117,8 @@ def relative_ui(labelFrame):
     relative_name_box.grid(row=0, column=1)
     relative_surname_box.grid(row=1, column=1)
     relative_tel_box.grid(row=2, column=1)
+    
+    return relative_name_box, relative_surname_box, relative_tel_box
     
        
 def school_ui(labelframe):
@@ -133,6 +142,8 @@ def school_ui(labelframe):
     max_hours.grid(row=2, column=0)
     max_hours_box.grid(row=2, column=1)
     
+    return school_var, wage_box, max_hours_box
+    
     
 def student_invoice_ui(labelframe):
     s_name = ttk.Label(labelframe, text= "Name: ")
@@ -153,13 +164,15 @@ def student_invoice_ui(labelframe):
     bday_box.grid(row=2, column=1)
     
     gender = StringVar()
-    w_radio = Radiobutton(labelframe, text="W", variable=gender, value="W", command=lambda: clicked( gender.get()))
-    m_radio = Radiobutton(labelframe, text="M", variable=gender , value="M",  command=lambda: clicked( gender.get()))
+    w_radio = Radiobutton(labelframe, text="W", variable=gender, value="W", command=lambda: print( gender.get()))
+    m_radio = Radiobutton(labelframe, text="M", variable=gender , value="M",  command=lambda: print( gender.get()))
     w_radio.grid(row=3, column=0)
     m_radio.grid(row=3, column=1)
     w_radio.deselect()
     m_radio.deselect()
     w_radio.select()
+    
+    return s_name_box, s_surname_box, bday_box, gender
     
 
 def praxiseinsatz_ui(labelframe):
@@ -177,6 +190,8 @@ def praxiseinsatz_ui(labelframe):
     hours_box = ttk.Entry(labelframe)
     hours.grid(row=1, column=0)
     hours_box.grid(row=1, column=1)
+    
+    return start_date_box, end_date_box, hours_box
     
 def setup():
     root = ThemedTk()
@@ -222,10 +237,8 @@ def radio_button(root):
     Radiobutton(root, text="M", variable=r, value=2,  command=lambda: clicked(root, r.get())).pack()
     
 
-def clicked(val):
-    print(val)
-    #myLabel = ttk.Label(root, text=str(val))
-    #myLabel.pack()
+def clicked(values, number):
+    print(values)
 
 def open_file_dialog(root):
     root.filename = filedialog.askopenfilename(initialdir="", title="")
