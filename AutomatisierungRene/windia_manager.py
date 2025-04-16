@@ -59,7 +59,10 @@ class WindiaManager:
 
 
     def add_new_patient(self):
-        
+        print(self.patient_data)
+        print(self.catalog_data)
+        print(self.patient_insurance_data)
+        return
         #click NEW
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
 
@@ -166,6 +169,10 @@ class WindiaManager:
         
             
     def issue_an_invoice(self):
+        #print(self.patient_data)
+        #print(self.catalog_data)
+        #print(self.patient_insurance_data)
+        
         #open_patient_window -> add new patient
         self.autoManager.open_window(WindiaWindows.PATIENT)
         self.add_new_patient()
@@ -251,21 +258,21 @@ class WindiaManager:
     def test(self):
         self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_EDIT)
 
-W = WindiaManager()
+#W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
-W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
-W.patient_insurance_data = PatientInsuranceInfo(  "XX", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
-W.catalog_data = Catalog("10,76", ["29.04.2024 - 06.09.2024", "21.14.2024 - 29.11.2024"] , ["210,15", "218,7"])
+##W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
+#W.patient_insurance_data = PatientInsuranceInfo(  "XX", "Universitätsklinikum Tübingen", "AOK BW Sindelfingen P", 5, "01.01.2024", "Baiker", "Brosch", ["Eltern im Haus", "Hallo"], "braucht beatmung", True )
+#W.catalog_data = Catalog("10,76", ["29.04.2024 - 06.09.2024", "21.14.2024 - 29.11.2024"] , ["210,15", "218,7"])
 #W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
-W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
+#W.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
 
 
-W.autoManager.open_window(WindiaWindows.PATIENT)
-W.add_new_patient()
-W.autoManager.close_window()
-W.autoManager.open_window(WindiaWindows.CATALOG)
-W.change_gebuerenkatalog()
-W.autoManager.close_window()
-W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
-input_hours_for_bill(W.autoManager, 200)
+#W.autoManager.open_window(WindiaWindows.PATIENT)
+#W.add_new_patient()
+#W.autoManager.close_window()
+#W.autoManager.open_window(WindiaWindows.CATALOG)
+#W.change_gebuerenkatalog()
+#W.autoManager.close_window()
+#W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
+#input_hours_for_bill(W.autoManager, 200)

@@ -1,6 +1,9 @@
 from tkinter import *
 from tkinter import filedialog, ttk
 from ttkthemes import ThemedTk
+from windia_manager import WindiaManager
+from patient_data_form import Patient, PatientInsuranceInfo
+from catalog_data import Catalog
 
 def invoice_ui(root):
   
@@ -33,31 +36,35 @@ def add_patient_ui(root):
     relativeFrame = LabelFrame(root, text = "Angehörige")
     relativeFrame.grid(row=2, column=0, padx=20, pady=20,  sticky="w")
     
-    city, zip, street, name, surname, bday, gender = stamm_ui(stammFrame)
+    city, zip, street, name, surname, bday, gender, tel_box = stamm_ui(stammFrame)
     relative_name, relative_surname, relative_tel = relative_ui(relativeFrame)
-    doctor, insurance, insurance_number, care_deg, care_deg_date, geldleistung = care_ui(careFrame)
+    doctor1, doctor2, insurance, insurance_number, care_deg, care_deg_date, geldleistung, start_date = care_ui(careFrame)
     
     sendFrame = Frame(root)
     sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-    send_button = Button(sendFrame, text="Neuer Patient anlegen starten", background="#5f70b8", foreground="white",  command=lambda: clicked([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.get(), gender.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get()], 1))
+    send_button = Button(sendFrame, text="Neuer Patient anlegen starten", background="#5f70b8", foreground="white",  command=lambda: clicked([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.get(), gender.get(),tel_box.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor1.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get(), start_date.get(), doctor2.get()], 1))
     send_button.grid(row=0, column=0)
     
     
     
 def care_ui(labelframe):
-    doctor = ttk.Label(labelframe, text="Hausarzt: ")
+    doctor1 = ttk.Label(labelframe, text="Hausarzt: ")
+    doctor2 = ttk.Label(labelframe, text="Arzt2: ")
     insurance = ttk.Label(labelframe, text="Krankenkasse: ")
     insurance_number = ttk.Label(labelframe, text="Vers.Nr.: ")
     care_deg = ttk.Label(labelframe, text="Pflegegrad: ")
     care_deg_date = ttk.Label(labelframe, text="Seit: ")
-    doctor_box = ttk.Entry(labelframe)
+    doctor_box1 = ttk.Entry(labelframe)
+    doctor_box2= ttk.Entry(labelframe)
     insurance_box = ttk.Entry(labelframe)
     insurance_number_box = ttk.Entry(labelframe)
     care_deg_box = ttk.Entry(labelframe)
     care_deg_date_box = ttk.Entry(labelframe)
     
-    doctor.grid(row=0, column=0)
-    doctor_box.grid(row=0, column=1)
+    doctor1.grid(row=0, column=0)
+    doctor2.grid(row=0, column=2)
+    doctor_box1.grid(row=0, column=1)
+    doctor_box2.grid(row=0, column=3)
     insurance.grid(row=1, column=0)
     insurance_box.grid(row=1, column=1)
     insurance_number.grid(row=1, column=2)
@@ -74,12 +81,17 @@ def care_ui(labelframe):
     k_radio.deselect()
     g_radio.select()
     
+    date = ttk.Label(labelframe, text="Betreuungsbeginn: ")
+    date_box = ttk.Entry(labelframe)
+    date.grid(row=3, column=0)
+    date_box.grid(row=3, column=1)
     
     
-    g_radio.grid(row=3, column=0)
-    k_radio.grid(row=3, column=1)
     
-    return doctor_box, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung
+    g_radio.grid(row=4, column=0)
+    k_radio.grid(row=4, column=1)
+    
+    return doctor_box1,doctor_box2, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
     
     
 def stamm_ui(labelframe):
@@ -91,14 +103,19 @@ def stamm_ui(labelframe):
     zip_box = ttk.Entry(labelframe)
     street_box = ttk.Entry(labelframe)
     
+    tel = ttk.Label(labelframe, text="Telephon: ")
+    tel_box = ttk.Entry(labelframe)
+        
     city.grid(row=4, column=0)
     city_box.grid(row=4, column=1)
     zip.grid(row=5, column=0)
     zip_box.grid(row=5, column=1)
     street.grid(row=6, column=0)
     street_box.grid(row=6, column=1)
+    tel.grid(row=7, column=0)
+    tel_box.grid(row=7, column=1)
     
-    return city_box, zip_box, street_box, s_name, s_surname, bday, gender
+    return city_box, zip_box, street_box, s_name, s_surname, bday, gender, tel_box
     
 def relative_ui(labelFrame):
     relative_name = ttk.Label(labelFrame, text="Name: ")
@@ -198,7 +215,7 @@ def setup():
     style(root)
     root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
     root.title("Windia Automation")
-    root.geometry("500x700")
+    root.geometry("700x900")
     return root
 
 def main_menu(root):
@@ -221,7 +238,9 @@ def clicked_menu_item(frame, number):
     if number == 1:
         add_patient_ui(frame)
     
-def ui_start():
+def ui_start(windiaManager : WindiaManager):
+    global w_manager 
+    w_manager = windiaManager
     root = setup()
     menuFrame, formFrame = main_menu(root)
 
@@ -235,7 +254,22 @@ def radio_button(root):
     
 
 def clicked(values, number):
-    print(values)
+    print ( values)
+    if number == 0:
+        w_manager.patient_data = Patient(values[0], values[1], values[3], values[2], "", "", "", "","", "","","")
+        w_manager.catalog_data = Catalog(values[5], [str(values[7]) + " - " + str(values[8]) , str(values[10]) + " - " + str(values[11])], [str(values[9]), str(values[12])] )
+        w_manager.patient_insurance_data = PatientInsuranceInfo("XX", values[4], "", "", "", "", "", "", "", False)
+        w_manager.issue_an_invoice()
+        
+    if number == 1:
+        w_manager.patient_data = Patient(values[3], values[4], values[6], values[5], "", values[2], values[1], values[0], values[7], str(values[17]), "", str(values[17]))
+        
+        
+        w_manager.patient_insurance_data = PatientInsuranceInfo(values[13], values[12], values[12], values[14], values[15],values[11],values[18], [values[8],values[9],values[10]], "", values[16] )
+        w_manager.add_new_patient()
+        
+        
+        
 
 def open_file_dialog(root):
     root.filename = filedialog.askopenfilename(initialdir="", title="")
@@ -246,4 +280,3 @@ def style(root):
 
     
     
-ui_start()
