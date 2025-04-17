@@ -52,17 +52,24 @@ class WindiaManager:
             self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
         #-- save and edit to change degree of care
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 5/12 , 9/10)
+        self.autoManager._click_popup_window_away("6", "WinDIA-Meldung") # soll ort übernommen werden - ja button
         time.sleep(0.1)
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/9 , 9/10)
         time.sleep(0.2)
         self.input_degree_of_care(self.patient_insurance_data.care_degree, self.patient_insurance_data.degree_since_date)
 
+    def insert_invoice_data(self, insurance_str : str):
+        if insurance_str == "Universitätsklinikum Tübingen":
+            self.patient_invoice = Invoice("An das", "Universitätsklinikum Tübingen", "Stabstelle KV4 Pflegedirektion, Fr.Zahn",  "Hoppe-Seyer-Str.6", "72076", "Tübingen")
+            self.patient_data.street = "Hoppe-Seyer-Str.6"
+            self.patient_data.zip = "72076"
+            self.patient_data.city = "Tübingen"
 
     def add_new_patient(self):
-        print(self.patient_data)
-        print(self.catalog_data)
-        print(self.patient_insurance_data)
-        return
+        if not self.autoManager.get_and_wait_for_window(WindiaWindows.PATIENT, 3):
+            self.autoManager.open_window(WindiaWindows.PATIENT)
+        
+        
         #click NEW
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
 
@@ -79,6 +86,7 @@ class WindiaManager:
             self.switch_patient_tab(PatientWindowTabs.RECHNUNG)
             self.autoManager.click_inside_window(WindiaWindows.PATIENT,6/10 , 3/13)
             self._rechnung()
+            #self.autoManager._click_popup_window_away("2")
             self._save_new_patient() #save patient/student
             return
 
@@ -164,7 +172,7 @@ class WindiaManager:
 
             self.autoManager.click_inside_window(WindiaWindows.CATALOG, 5/9 , 9/10) #Save btn 
             time.sleep(0.1)  
-            self.autoManager._click_popup_window_away("7")
+            self.autoManager._click_popup_window_away("7", "windia")
 
         
             
@@ -184,9 +192,11 @@ class WindiaManager:
         
         self.autoManager.close_window()    
         self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
-        input_hours_for_bill()
+        input_hours_for_bill(self.autoManager, 200)
         
     def _save_new_patient(self):
+        
+        print("saving patient")
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 5/12 , 9/10)
         self.autoManager.cur_selected_patient = (self.patient_data.name) + ", " + (self.patient_data.surname)
         if self.autoManager.cur_selected_patient:
@@ -205,7 +215,7 @@ class WindiaManager:
             self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_2 , doc)    
     
     def input_degree_of_care(self, deg : int, date : str, new = False):
-        if not ( 1 <= deg <= 5 ):
+        if not ( 1 <= int(deg) <= 5 ):
             print ("Pflegegrad muss zwischen 1 und 5 sein")
             return
         
@@ -256,7 +266,7 @@ class WindiaManager:
 
                 
     def test(self):
-        self.autoManager.click_button(PatientAutoID.PG_HISTORY_TOOLBAR_EDIT)
+        self.input_insurance( i_dropdown=PatientAutoID.INSURANCE_P_DROPDOWN  ,insurance=self.patient_insurance_data.p_insurance , dropdown_title= INSURANCE_P_DROPDOWN_TITLE )
 
 #W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)

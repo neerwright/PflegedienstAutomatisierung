@@ -45,3 +45,6 @@ def click_distance_from_top_left(x : float , y : float , automationManager : Aut
     w = abs(rec.top - rec.bottom) * y
     mouse.click(coords= ( int((rec.left + x) * x_multiplier) , int((rec.top + y) * y_multiplier)))
 
+
+def print_leistungsnachweise(automanager : AutomationManager):
+    pass

@@ -1,0 +1,47 @@
+AOK BW Ludwigsburg
+AOK BW Sindelfingen P
+AOK BW Stuttgart B Pflegeversicherung
+AOK BW Stuttgart P Pflegeversicherung
+AOK BW Tübingen P
+AOK Neckar-Alb B
+AOK Neckar-Alb P
+AOK Plus B
+AOK Plus P
+Audi BKK P
+Bahn BKK B RGS Mitte-Ost
+Bahn BKK P RGS Mitte-Ost
+Barmenia (und LBV) P
+Barmer
+BARMER B DDG Rechnungsprüfstelle
+BARMER P
+something went wrong when selecting from dropdown, but will proceed
+BIG direkt gesund B
+BIG direkt gesund P
+BKK mhplus P Technologie abhängige Menschen
+BKK Scheufelen
+BKK VBU P Kundencenter intern
+BKK Verbund P Pflegekasse
+Bosch BKK P
+Continentale P Betriebskrankenkasse Pflegekasse
+DAK B
+DAK P
+DeBeKa P
+Deutsche BKK B Pflegekasse
+Deutsche BKK P Pflegekasse
+IKK Classic (West) P
+IKK Classic B
+IKK Classic P Hauptverwaltung
+IKK gesund plus B
+IKK gesund plus P
+Kaufmänn.Krankenkasse B
+Kaufmänn.Krankenkasse P
+Knappschaft-Bahn-See B Geschäftsst.-Referat KV -
+Knappschaft-Bahn-See P Geschäftsst.-Referat KV -
+Mercedes Benz BKK B Pflegekasse
+Mercedes-Benz BKK P Pflegekasse
+R+V BKK - Team Pflege
+SBK P
+Selbstzahler P
+SVLFG B
+SVLFG P
+Techniker Krankenkasse P

@@ -94,12 +94,12 @@ class AutomationManager:
                 pass
         
                     
-    def _click_popup_window_away(self, id):
+    def _click_popup_window_away(self, id, title):
         sub_windows = self.windia.children()
         
         for window in sub_windows:
-            if "windia" == window.window_text():
-                no_btn = self.windia.child_window(auto_id=str(id), control_type="Button").wrapper_object()
+            if title == window.window_text():
+                no_btn = self.windia.child_window(auto_id=str(id), control_type="Button", found_index=0).wrapper_object()
                 no_btn.invoke()
         
     def click_inside_window(self, window : WindiaWindows, left_percent, top_percent, click = True):
@@ -264,7 +264,7 @@ class AutomationManager:
             case WindiaWindows.WINDIA:
                 pass
         if not dlg:
-            return
+            return False
         try:
             wait_until(wait_time, 0.1, dlg.is_enabled)
         except:

@@ -13,7 +13,7 @@ def invoice_ui(root):
     uniFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
     
     p1Frame = LabelFrame(root, text="Praxiseinsatz 1")
-    p2Frame = LabelFrame(root, text = "Praxiseinsatz 1")
+    p2Frame = LabelFrame(root, text = "Praxiseinsatz 2")
     p1Frame.grid(row=2, column=0, padx=20, pady=20, sticky="w")
     p2Frame.grid(row=3, column=0, padx=20, pady=20, sticky="w")
 
@@ -142,7 +142,7 @@ def school_ui(labelframe):
     school = ttk.Label(labelframe, text="Uni/Schule: ")
     school_var = StringVar()
     
-    unis = ["Uni Tübingen", "Freiburg"]
+    unis = ["Universitätsklinikum Tübingen", "Freiburg"]
     school_var.set(unis[0])
     school_combobox = OptionMenu(labelframe, school_var, *unis)
     school_combobox.grid(row=0, column=1)
@@ -213,7 +213,7 @@ def praxiseinsatz_ui(labelframe):
 def setup():
     root = ThemedTk()
     style(root)
-    root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
+    root.iconbitmap('AutomatisierungRene/ambIcon.ico')
     root.title("Windia Automation")
     root.geometry("700x900")
     return root
@@ -225,7 +225,7 @@ def main_menu(root):
     formFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
     invoice_button = ttk.Button(menuFrame, text= "Rechnung", command=lambda: clicked_menu_item(formFrame,0))
     invoice_button.grid(row=0, column=0)
-    patient_button = ttk.Button(menuFrame, text= "Neue Patient", command=lambda: clicked_menu_item(formFrame,1))
+    patient_button = ttk.Button(menuFrame, text= "Neuer Patient", command=lambda: clicked_menu_item(formFrame,1))
     patient_button.grid(row=0, column=1)
     
     return menuFrame, formFrame
@@ -256,15 +256,18 @@ def radio_button(root):
 def clicked(values, number):
     print ( values)
     if number == 0:
-        w_manager.patient_data = Patient(values[0], values[1], values[3], values[2], "", "", "", "","", "","","")
+        print("making an invoice....")
+        w_manager.patient_data = Patient(values[0], values[1], values[3], values[2], "", "", "", "","", "15.01.2025","","")
         w_manager.catalog_data = Catalog(values[5], [str(values[7]) + " - " + str(values[8]) , str(values[10]) + " - " + str(values[11])], [str(values[9]), str(values[12])] )
         w_manager.patient_insurance_data = PatientInsuranceInfo("XX", values[4], "", "", "", "", "", "", "", False)
+        w_manager.insert_invoice_data(values[4])
         w_manager.issue_an_invoice()
         
     if number == 1:
+        print("adding patient....")
         w_manager.patient_data = Patient(values[3], values[4], values[6], values[5], "", values[2], values[1], values[0], values[7], str(values[17]), "", str(values[17]))
         
-        
+        w_manager.patient_insurance_data = None
         w_manager.patient_insurance_data = PatientInsuranceInfo(values[13], values[12], values[12], values[14], values[15],values[11],values[18], [values[8],values[9],values[10]], "", values[16] )
         w_manager.add_new_patient()
         
