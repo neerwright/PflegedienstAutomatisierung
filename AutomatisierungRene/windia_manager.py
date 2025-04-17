@@ -263,12 +263,36 @@ class WindiaManager:
             
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y)
             
+    def print_lns(self):
+        test_patients = [ "Auer, Alexander", "Balog, Loveleen", "Begiert, Aleksander", "Egeler, Emil" , "Berner, Anjulie"]
+        ln_type = [ "V", "E+V", "E+V", "E", "E"]
+        cur_page = "E"
+        for i, patient in enumerate(test_patients):
+            self.autoManager.select_patient(patient)
+            self.autoManager.close_window()
+            self.autoManager.cur_selected_patient = patient
 
+            self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
+            
+            if ln_type[i] == "E+V":
+                print_leistungsnachweis(self.autoManager, "E", "E")
+                time.sleep(5)
+                self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
+                print_leistungsnachweis(self.autoManager, "V", "E")
+                cur_page = "E"
+                continue
+
+            
+            print_leistungsnachweis(self.autoManager, ln_type[i], cur_page)
+            cur_page = "E"
                 
     def test(self):
-        self.input_insurance( i_dropdown=PatientAutoID.INSURANCE_P_DROPDOWN  ,insurance=self.patient_insurance_data.p_insurance , dropdown_title= INSURANCE_P_DROPDOWN_TITLE )
+        self.autoManager.cur_selected_patient="Auer, Alexander"
+        print(find_caregiver_row(self.autoManager))
+        
+        
 
-#W = WindiaManager()
+W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
 ##W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
@@ -286,3 +310,5 @@ class WindiaManager:
 #W.autoManager.close_window()
 #W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
 #input_hours_for_bill(W.autoManager, 200)
+
+W.print_lns()

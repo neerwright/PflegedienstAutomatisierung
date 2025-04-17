@@ -39,9 +39,8 @@ class AutomationManager:
         
     def setup_automation(self, app_name):
         open_windows = Desktop(backend="uia").windows()
-
+        
         for window in open_windows:
-            
             window_title = window.window_text()
             if app_name in window_title:
                 app = Application(backend="uia").connect(handle=window.handle, timeout=4)
@@ -94,9 +93,12 @@ class AutomationManager:
                 pass
         
                     
-    def _click_popup_window_away(self, id, title):
+    def _click_popup_window_away(self, id, title, w = None):
         sub_windows = self.windia.children()
-        
+        if w:
+            btn= w.child_window(auto_id=str(id), control_type="Button", found_index=0).wrapper_object()
+            btn.invoke()
+
         for window in sub_windows:
             if title == window.window_text():
                 no_btn = self.windia.child_window(auto_id=str(id), control_type="Button", found_index=0).wrapper_object()
@@ -127,12 +129,16 @@ class AutomationManager:
         dlg = self.get_and_wait_for_window(window, 5)
         return dlg.rectangle() if dlg else None
 
-    def select_patient(self, windia, patient_firstname, patient_surname):
-        patient_name = patient_surname + patient_firstname
+    def select_patient(self, patient_name):
+        if not self.get_and_wait_for_window(WindiaWindows.PATIENT, 3):
+            self.open_window(WindiaWindows.PATIENT)
+        patient_name = patient_name.replace(",", "")
+        patient_name = patient_name.replace(" ", "")
+        print(patient_name)
         #open Patienten Window
-        self.open_window(WindiaWindows.PATIENT)
+        #self.open_window(WindiaWindows.PATIENT)
         #Find patient
-        patient_scrollbar = windia.child_window(auto_id="1", control_type="List").wrapper_object()
+        patient_scrollbar = self.windia.child_window(auto_id="1", control_type="List").wrapper_object()
         patients = patient_scrollbar.children(control_type='ListItem')
         for patient in patients:
             patient_string = ""
@@ -190,7 +196,9 @@ class AutomationManager:
                     print("something went wrong when selecting from dropdown, but will proceed")
                     pass
                 
-    def close_window(self):
+    def close_window(self, window = None):
+        if window:
+            window.SchließenButton.invoke()
         self.windia.SchließenButton.invoke()
 
     def click_button(self, button : Enum, double_click = False):
@@ -201,6 +209,7 @@ class AutomationManager:
             x_offset = -button.value if rec.left <= DIST_TO_SECOND_MONITOR else -button.value * 0.77
             self.click_on_top_left_corner(new_button, x_offset ,20, double_click)
             return
+  
         if not double_click:
             get_wrapper(button, self.windia).click()
         else:
@@ -259,7 +268,7 @@ class AutomationManager:
             case WindiaWindows.CARE_DEGREE_HISTORY:
                 dlg = self.find_win32_window(DEG_OF_CARE_WINDOW_TITLE)
             case WindiaWindows.AUSDRUCK_LN:
-                dlg = self.get_sub_window(self.AUSDRUCK_LN__DLG_STRING)
+                dlg = self.get_separate_window(AUSDRUCK_LN__DLG_STRING)
 
             case WindiaWindows.WINDIA:
                 pass

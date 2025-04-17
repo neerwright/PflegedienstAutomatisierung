@@ -25,7 +25,7 @@ def get_control_type(element_id):
         return "Pane"
     if element_id == PatientAutoID.INVOICE_ANREDE.value or element_id == PatientAutoID.ANREDE.value or element_id == PatientAutoID.LEISTUNG.value:
         return "ComboBox"
-    if element_id == PatientAutoID.PG_BUTTON.value or element_id == RelativesAutoID.CLOSE_BTN.value:
+    if element_id == PatientAutoID.PG_BUTTON.value or element_id == RelativesAutoID.CLOSE_BTN.value or element_id == LN_ids.EINSTELLUNG_BTN.value or  element_id == LN_ids.LN_PRINT_once.value :
         return "Button"
     return "Edit"
 

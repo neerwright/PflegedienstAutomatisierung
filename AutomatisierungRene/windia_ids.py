@@ -68,6 +68,10 @@ class PatientAutoID(Enum):
     PG_HISTORY_TOOLBAR_EDIT = -110
     PG_HISTORY_TOOLBAR_SAFE = -110
     PG_HISTORY_TOOLBAR_CLOSE = -290
+    
 
-class WindiaButtons(Enum):
-    AUDRUCK_LN_PRINT = 88
+class LN_ids(Enum):
+    EINSTELLUNG_BTN = 73
+    LN_PRINT_once = 88
+    UNDER_VH_BUTTON_EDIT = 105
+    CANCEL_BTN = 61
