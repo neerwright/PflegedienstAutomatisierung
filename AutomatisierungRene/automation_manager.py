@@ -154,7 +154,9 @@ class AutomationManager:
     def get_child_object(self):
         pass
     
-    def input_text(self, field_name_or_enum , text : str ):
+    def input_text(self, field_name_or_enum , text : str , windia = None):
+        if windia is None:
+            windia = self.windia
         element_enum = None
         if isinstance(field_name_or_enum, str):
             element_enum = get_enum_from_field(field_name_or_enum)
@@ -167,7 +169,7 @@ class AutomationManager:
         if element_enum.value == -1:
             return
         print(element_enum)
-        get_wrapper(element_enum, self.windia).set_text(text) 
+        get_wrapper(element_enum, windia).set_text(text) 
         
     
     def check_pane_tickbox(self, tickbox_title : str):

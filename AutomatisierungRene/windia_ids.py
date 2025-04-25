@@ -68,6 +68,8 @@ class PatientAutoID(Enum):
     PG_HISTORY_TOOLBAR_EDIT = -110
     PG_HISTORY_TOOLBAR_SAFE = -110
     PG_HISTORY_TOOLBAR_CLOSE = -290
+
+    OK_BUTTON = 2
     
 
 class LN_ids(Enum):
@@ -75,3 +77,4 @@ class LN_ids(Enum):
     LN_PRINT_once = 88
     UNDER_VH_BUTTON_EDIT = 105
     CANCEL_BTN = 61
+    LN_MONTH = 120

@@ -287,8 +287,13 @@ class WindiaManager:
             cur_page = "E"
                 
     def test(self):
-        self.autoManager.cur_selected_patient="Auer, Alexander"
-        print(find_caregiver_row(self.autoManager))
+        self.autoManager.cur_selected_patient="Mock, Marina"
+        #LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
+        #LN.child_window(auto_id="120", control_type="Edit").set_text("3")
+        
+        self.autoManager.input_text(LN_ids.LN_MONTH, "4", self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5))
+        #self.autoManager.click_button(PatientAutoID.OK_BUTTON)
+        #print(find_caregiver_row(self.autoManager))
         
         
 
@@ -311,4 +316,4 @@ W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
 #input_hours_for_bill(W.autoManager, 200)
 
-W.print_lns()
+W.test()
