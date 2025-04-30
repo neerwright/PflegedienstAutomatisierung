@@ -5,26 +5,28 @@ import time
 from docx import Document
 
 
-def read_VE_fromdocx_file():
+def read_VE_fromdocx_file(path : str):
     patients = {}
-    document = Document("PflegedienstAutomatisierung\AutomatisierungRene\LN.docx")
+    document = Document(path)
     for index, table in enumerate(document.tables):
-        print("Table", index)
+        #print("Table", index)
         for row in range(len(table.rows)):
             for col in range(len(table.columns)):
                 #print(table.cell(row, col).text, end='\t')
                 pass
             
             LN_type = table.cell(row, 2).text if len(table.rows) > 2 else ""
-            print("LN_type" + str(LN_type))
+            #print("LN_type" + str(LN_type))
             if LN_type == "E" or LN_type == "V" or LN_type == "E+V":
                 name = table.cell(row, 0).text
-                print("name: " + str(name))
+                #print("name: " + str(name))
                 patients[name] = LN_type
             print()
         print()
-        print(patients)
-
+        #print(patients)
+        return patients
+        
+        
 
 
 def input_hours_for_bill(automationManager : AutomationManager, max_hours : int):
@@ -100,6 +102,7 @@ def find_caregiver_row(automanager):
                 return y
         except:
             y += offset
+
 
 
 def print_leistungsnachweis(automanager : AutomationManager, type, cur_page):

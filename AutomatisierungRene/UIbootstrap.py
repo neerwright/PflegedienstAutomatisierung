@@ -4,10 +4,10 @@ import ttkbootstrap as tb
 from windia_manager import WindiaManager
 from patient_data_form import Patient, PatientInsuranceInfo
 from catalog_data import Catalog
-
-
-
-
+import pathlib
+from tkinter.filedialog import askdirectory, asksaveasfilename
+from tkinter import filedialog
+from leistungsnachweis_navigation import *
 
 class UImanager():
     windiaManager = None
@@ -16,7 +16,9 @@ class UImanager():
     formFrame = None
     invoice_button = None
     patient_button = None
-
+    ln_button = None
+    
+    ln_path = ""
     
     def __init__(self, windiaManager : WindiaManager):
         self.windiaManager = windiaManager
@@ -40,19 +42,65 @@ class UImanager():
         self.formFrame = tb.Frame(self.root)
         self.menuFrame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
         self.formFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        
         self.invoice_button = tb.Button(self.menuFrame, text= "Rechnung", bootstyle="danger", command=lambda: self.render_invoice())
         self.invoice_button.grid(row=0, column=0 , padx=20)
         self.patient_button = tb.Button(self.menuFrame, text= "Neuer Patient", bootstyle="default", command=lambda: self.render_new_patient_form())
         self.patient_button.grid(row=0, column=1 , padx=20)
+        self.ln_button = tb.Button(self.menuFrame, text= "Leistungsnachweise", bootstyle="default", command=lambda: self.render_ln())
+        self.ln_button.grid(row=0, column=2 , padx=20)
         
+    ######## LeistungsNachweise #####################   
+    def render_ln(self):
+        self.clear_frame(self.formFrame)
+        self.ln_button.configure(bootstyle="danger")
+        self.patient_button.configure(bootstyle="default")
+        self.invoice_button.configure(bootstyle="default")
         
+        pathEntryFrame = tb.Frame(self.formFrame)
+        dataFrame = tb.Labelframe(self.formFrame, text = "Patient / LN")
+        pathEntryFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
+        dataFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
         
+        tb.Label(pathEntryFrame, text='Leistungsnachweise Zettel auswählen: ').grid(row=0, column=0, padx=10, pady=2, sticky='ew')
+        curr_path = tb.Label(pathEntryFrame, text=f'Ausgewählte Datei: {self.ln_path}')
+        curr_path.grid(row=1, column=0, padx=10, pady=2, sticky='ew')
+        #e1 = tb.Entry(self.formFrame, textvariable=search_path_var)
+        #e1.grid(row=0, column=1, sticky='ew', padx=10, pady=2)
+        button = tb.Button(pathEntryFrame, text='Word Datei wählen', command=lambda: self.on_browse(curr_path, dataFrame), style='primary.TButton')
+        button.grid(row=0, column=2, sticky='ew', pady=2, ipadx=10)
+        
+        sendFrame = tb.Frame(self.formFrame)
+        sendFrame.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        send_button = tb.Button(sendFrame, text="Leistungsnachweise drucken starten", style='Outline.TButton' , command=lambda: self.start_ln())
+        send_button.grid(row=0, column=0)
+        
+    def start_ln(self):
+        pass
     
+    def on_browse(self, curr_path, dataFrame):
+        filepath = filedialog.askopenfilename()
+        self.ln_path = filepath
+        curr_path.configure(text= f'Ausgewählte Datei: {self.ln_path}')
+        try:
+            res = read_VE_fromdocx_file(filepath)
+            self.create_table(dataFrame, res)
+        except:
+            curr_path.configure(text= f'ERROR datei konnte nicht gelesen werden!', bootstyle="danger")
+      
+    def create_table(self, frame, data):
+        i = 0
+        for patient, ln_type in data.items():
+              tb.Label(frame, text=str(patient)).grid(row=i, column=0, padx=10, pady=2, sticky='ew')
+              tb.Label(frame, text=str(ln_type)).grid(row=i, column=1, padx=10, pady=2, sticky='ew')
+              i +=1
+        
     ######## Invoice #####################
     def render_invoice(self):
         self.clear_frame(self.formFrame)
         self.invoice_button.configure(bootstyle="danger")
         self.patient_button.configure(bootstyle="default")
+        self.ln_button.configure(bootstyle="default")
 
         studentFrame = tb.Labelframe(self.formFrame, text="Student")
         uniFrame = tb.Labelframe(self.formFrame, text = "Uni/Schule Abrechnung")
@@ -151,7 +199,7 @@ class UImanager():
     
     def start_invoice(self, values):
         print (values)
-        return
+        
         print("making an invoice....")
         self.windiaManager.patient_data = Patient(values[0], values[1], values[3], values[2], "", "", "", "","", "15.01.2025","","")
         self.windiaManager.catalog_data = Catalog(values[5], [str(values[7]) + " - " + str(values[8]) , str(values[10]) + " - " + str(values[11])], [str(values[9]), str(values[12])] )
@@ -165,6 +213,7 @@ class UImanager():
         self.clear_frame(self.formFrame)
 
         self.invoice_button.configure(bootstyle="default")
+        self.ln_button.configure(bootstyle="default")
         self.patient_button.configure(bootstyle="danger")
         
         stammFrame = tb.Labelframe(self.formFrame, text="Stamm")
