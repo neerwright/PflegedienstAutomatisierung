@@ -1,0 +1,269 @@
+from tkinter import *
+from ttkbootstrap.constants import *
+import ttkbootstrap as tb
+from windia_manager import WindiaManager
+from patient_data_form import Patient, PatientInsuranceInfo
+from catalog_data import Catalog
+
+
+
+
+
+class UImanager():
+    windiaManager = None
+    root = None
+    menuFrame = None
+    formFrame = None
+    
+    def __init__(self, windiaManager : WindiaManager):
+        self.windiaManager = windiaManager
+        
+        self.root = tb.Window(themename="superhero")
+
+        self.root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
+        self.root.title("Windia Automation")
+        self.root.geometry("900x1200")
+
+    ######## Main Menue #####################
+    def start(self):
+        self.main_menu()
+        self.root.mainloop()
+
+        
+    def main_menu(self):
+        self.menuFrame = tb.Frame(self.root)
+        self.formFrame = tb.Frame(self.root)
+        self.menuFrame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
+        self.formFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        invoice_button = tb.Button(self.menuFrame, text= "Rechnung", command=lambda: self.render_invoice())
+        invoice_button.grid(row=0, column=0 , padx=20)
+        patient_button = tb.Button(self.menuFrame, text= "Neuer Patient", command=lambda: self.render_new_patient_form())
+        patient_button.grid(row=0, column=1 , padx=20)
+        
+        
+    
+    ######## Invoise #####################
+    def render_invoice(self):
+        self.clear_frame(self.formFrame)
+        print("cleared")
+        studentFrame = tb.Labelframe(self.formFrame, text="Student")
+        uniFrame = tb.Labelframe(self.formFrame, text = "Uni/Schule Abrechnung")
+        studentFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
+        uniFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        
+        p1Frame = tb.Labelframe(self.formFrame, text="Praxiseinsatz 1")
+        p2Frame = tb.Labelframe(self.formFrame, text = "Praxiseinsatz 2")
+        p1Frame.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        p2Frame.grid(row=3, column=0, padx=20, pady=20, sticky="w")
+
+        name, surname, bday, gender = self.student_invoice_ui(studentFrame)
+        
+        school, wage, max_hours = self.school_ui(uniFrame)
+        start_date1, end_date1, hours1 = self.praxiseinsatz_ui(p1Frame)
+        start_date2, end_date2, hours2 = self.praxiseinsatz_ui(p2Frame)
+        
+        sendFrame = tb.Frame(self.formFrame)
+        sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
+        send_button = tb.Button(sendFrame, text="Rechung erstellen starten", style='Outline.TButton' , command=lambda: self.start_invoice([name.get(), surname.get(), bday.get(), gender.get(), school.get(), wage.get(), max_hours.get(), start_date1.get(), end_date1.get(), hours1.get(),start_date2.get(), end_date2.get(), hours2.get() ]))
+        send_button.grid(row=0, column=0)
+            
+    
+    def clear_frame(self, frame):
+        for widget in frame.winfo_children():
+            widget.destroy()
+            
+    def student_invoice_ui(self, labelframe):
+        s_name = tb.Label(labelframe, text= "Name: ")
+        s_name_box = tb.Entry(labelframe)
+        s_surname = tb.Label(labelframe, text = "Vorname: ")
+        s_surname_box = tb.Entry(labelframe)
+        bday = tb.Label(labelframe, text="Geburtstag")
+        bday_box = tb.Entry(labelframe)
+        
+        
+        s_name.grid(row=0, column=0)
+        s_name_box.grid(row=0, column=1)
+
+        s_surname.grid(row=1, column=0)
+        s_surname_box.grid(row=1, column=1)
+
+        bday.grid(row=2, column=0)
+        bday_box.grid(row=2, column=1)
+        
+        gender = tb.StringVar()
+        w_radio = tb.Radiobutton(labelframe, text="W", variable=gender, value="W", command=lambda: print( gender.get()))
+        m_radio = tb.Radiobutton(labelframe, text="M", variable=gender , value="M",  command=lambda: print( gender.get()))
+        w_radio.grid(row=3, column=0)
+        m_radio.grid(row=3, column=1)
+
+        
+        return s_name_box, s_surname_box, bday_box, gender
+
+    def school_ui(self, labelframe):
+        school = tb.Label(labelframe, text="Uni/Schule: ")
+        school_var = tb.StringVar()
+        
+        unis = ["Universitätsklinikum Tübingen", "Freiburg"]
+        #school_var.set(unis[0])
+        school_combobox = tb.OptionMenu(labelframe, school_var,unis[0], *unis)
+        school_combobox.grid(row=0, column=1)
+        school.grid(row=0, column=0)
+        
+        wage = tb.Label(labelframe, text="Stundenlohn: ")
+        wage_box = tb.Entry(labelframe)
+        wage.grid(row=1, column=0)
+        wage_box.grid(row=1, column=1)
+        
+        max_hours = tb.Label(labelframe, text="Max. abrechenbare Stunden: ")
+        max_hours_box = tb.Entry(labelframe)
+        max_hours_box.insert(END, "200")
+        max_hours.grid(row=2, column=0)
+        max_hours_box.grid(row=2, column=1)
+        
+        return school_var, wage_box, max_hours_box
+    
+    def praxiseinsatz_ui(self, labelframe):
+        start_date = tb.Label(labelframe, text="Von: ")
+        start_date_box = tb.Entry(labelframe)
+        start_date.grid(row=0, column=0)
+        start_date_box.grid(row=0, column=1)
+        
+        end_date = tb.Label(labelframe, text="bis: ")
+        end_date_box = tb.Entry(labelframe)
+        end_date.grid(row=0, column=2)
+        end_date_box.grid(row=0, column=3)
+        
+        hours = tb.Label(labelframe, text="Geleistete Stunden: ")
+        hours_box = tb.Entry(labelframe)
+        hours.grid(row=1, column=0)
+        hours_box.grid(row=1, column=1)
+        
+        return start_date_box, end_date_box, hours_box
+    
+    def start_invoice(self, values):
+        print (values)
+        
+        print("making an invoice....")
+        self.windiaManager.patient_data = Patient(values[0], values[1], values[3], values[2], "", "", "", "","", "15.01.2025","","")
+        self.windiaManager.catalog_data = Catalog(values[5], [str(values[7]) + " - " + str(values[8]) , str(values[10]) + " - " + str(values[11])], [str(values[9]), str(values[12])] )
+        self.windiaManager.patient_insurance_data = PatientInsuranceInfo("XX", values[4], "", "", "", "", "", "", "", False)
+        self.windiaManager.insert_invoice_data(values[4])
+        self.windiaManager.issue_an_invoice()
+        
+    ######## New Patient #####################
+    def render_new_patient_form(self):
+        self.clear_frame(self.formFrame)
+        stammFrame = tb.Labelframe(self.formFrame, text="Stamm")
+        careFrame = tb.Labelframe(self.formFrame, text = "Pflege")
+        stammFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
+        careFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        relativeFrame = tb.Labelframe(self.formFrame, text = "Angehörige")
+        relativeFrame.grid(row=2, column=0, padx=20, pady=20,  sticky="w")
+        
+        city, zip, street, name, surname, bday, gender, tel_box = self.stamm_ui(stammFrame)
+        relative_name, relative_surname, relative_tel = self.relative_ui(relativeFrame)
+        doctor1, doctor2, insurance, insurance_number, care_deg, care_deg_date, geldleistung, start_date = self.care_ui(careFrame)
+        
+        sendFrame = tb.Frame(self.formFrame)
+        sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
+        send_button = tb.Button(sendFrame, text="Neuer Patient anlegen starten",  style='Outline.TButton' ,  command=lambda: self.start_new_patient([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.get(), gender.get(),tel_box.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor1.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get(), start_date.get(), doctor2.get()]))
+        send_button.grid(row=0, column=0)
+        
+    def stamm_ui(self, labelframe):
+        s_name, s_surname, bday, gender = self.student_invoice_ui(labelframe)
+        city = tb.Label(labelframe, text="Ort: ")
+        zip = tb.Label(labelframe, text="PLZ: ")
+        street = tb.Label(labelframe, text="Straße: ")
+        city_box = tb.Entry(labelframe)
+        zip_box = tb.Entry(labelframe)
+        street_box = tb.Entry(labelframe)
+        
+        tel = tb.Label(labelframe, text="Telephon: ")
+        tel_box = tb.Entry(labelframe)
+            
+        city.grid(row=4, column=0)
+        city_box.grid(row=4, column=1)
+        zip.grid(row=5, column=0)
+        zip_box.grid(row=5, column=1)
+        street.grid(row=6, column=0)
+        street_box.grid(row=6, column=1)
+        tel.grid(row=7, column=0)
+        tel_box.grid(row=7, column=1)
+        
+        return city_box, zip_box, street_box, s_name, s_surname, bday, gender, tel_box
+
+    def relative_ui(self, labelFrame):
+        relative_name = tb.Label(labelFrame, text="Name: ")
+        relative_surname =  tb.Label(labelFrame, text="Vorname: ")
+        relative_tel =  tb.Label(labelFrame, text="Telephon: ")
+        
+        relative_name_box = tb.Entry(labelFrame)
+        relative_surname_box =  tb.Entry(labelFrame)
+        relative_tel_box =  tb.Entry(labelFrame)
+        
+        
+        relative_name.grid(row=0, column=0)
+        relative_surname.grid(row=1, column=0)
+        relative_tel.grid(row=2, column=0)
+        
+        relative_name_box.grid(row=0, column=1)
+        relative_surname_box.grid(row=1, column=1)
+        relative_tel_box.grid(row=2, column=1)
+        
+        return relative_name_box, relative_surname_box, relative_tel_box
+    
+    
+    def care_ui(self,labelframe):
+        doctor1 = tb.Label(labelframe, text="Hausarzt: ")
+        doctor2 = tb.Label(labelframe, text="Arzt2: ")
+        insurance = tb.Label(labelframe, text="Krankenkasse: ")
+        insurance_number = tb.Label(labelframe, text="Vers.Nr.: ")
+        care_deg = tb.Label(labelframe, text="Pflegegrad: ")
+        care_deg_date = tb.Label(labelframe, text="Seit: ")
+        doctor_box1 = tb.Entry(labelframe)
+        doctor_box2= tb.Entry(labelframe)
+        insurance_box = tb.Entry(labelframe)
+        insurance_number_box = tb.Entry(labelframe)
+        care_deg_box = tb.Entry(labelframe)
+        care_deg_date_box = tb.Entry(labelframe)
+        
+        doctor1.grid(row=0, column=0)
+        doctor2.grid(row=0, column=2)
+        doctor_box1.grid(row=0, column=1)
+        doctor_box2.grid(row=0, column=3)
+        insurance.grid(row=1, column=0)
+        insurance_box.grid(row=1, column=1)
+        insurance_number.grid(row=1, column=2)
+        insurance_number_box.grid(row=1, column=3)
+        care_deg.grid(row=2, column=0)
+        care_deg_date.grid(row=2, column=2)
+        care_deg_box.grid(row=2, column=1)
+        care_deg_date_box.grid(row=2, column=3)
+        
+        geldleistung = IntVar()
+        g_radio = tb.Radiobutton(labelframe, text="Geldleistung", variable=geldleistung, value=1, command=lambda: print(geldleistung))
+        k_radio = tb.Radiobutton(labelframe, text="Kombileistung", variable=geldleistung , value=0, command=lambda: print(geldleistung))
+  
+        
+        date = tb.Label(labelframe, text="Betreuungsbeginn: ")
+        date_box = tb.Entry(labelframe)
+        date.grid(row=3, column=0)
+        date_box.grid(row=3, column=1)
+        
+        
+        
+        g_radio.grid(row=4, column=0)
+        k_radio.grid(row=4, column=1)
+        
+        return doctor_box1,doctor_box2, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
+    
+    def start_new_patient(self, values):
+        print("adding patient....")
+        self.windiaManager.patient_data = Patient(values[3], values[4], values[6], values[5], "", values[2], values[1], values[0], values[7], str(values[17]), "", str(values[17]))
+        
+        self.windiaManager.patient_insurance_data = None
+        self.windiaManager.patient_insurance_data = PatientInsuranceInfo(values[13], values[12], values[12], values[14], values[15],values[11],values[18], [values[8],values[9],values[10]], "", values[16] )
+        self.windiaManager.add_new_patient()
+    
+ui = UImanager("")
+ui.start()

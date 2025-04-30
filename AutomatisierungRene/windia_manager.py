@@ -294,7 +294,7 @@ class WindiaManager:
         
         
 
-W = WindiaManager()
+#W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
 ##W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")
@@ -313,4 +313,4 @@ W = WindiaManager()
 #W.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
 #input_hours_for_bill(W.autoManager, 200)
 
-W.test()
+#W.test()
