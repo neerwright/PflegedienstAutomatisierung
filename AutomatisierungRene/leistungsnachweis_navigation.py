@@ -2,6 +2,31 @@ from automation_manager import AutomationManager
 from windia_ids import WindiaWindows, LN_ids , Windia_Buttons
 from pywinauto import keyboard, mouse, findwindows, Application
 import time
+from docx import Document
+
+
+def read_VE_fromdocx_file():
+    patients = {}
+    document = Document("PflegedienstAutomatisierung\AutomatisierungRene\LN.docx")
+    for index, table in enumerate(document.tables):
+        print("Table", index)
+        for row in range(len(table.rows)):
+            for col in range(len(table.columns)):
+                #print(table.cell(row, col).text, end='\t')
+                pass
+            
+            LN_type = table.cell(row, 2).text if len(table.rows) > 2 else ""
+            print("LN_type" + str(LN_type))
+            if LN_type == "E" or LN_type == "V" or LN_type == "E+V":
+                name = table.cell(row, 0).text
+                print("name: " + str(name))
+                patients[name] = LN_type
+            print()
+        print()
+        print(patients)
+
+read_VE_fromdocx_file()
+
 
 def input_hours_for_bill(automationManager : AutomationManager, max_hours : int):
     offset = 20

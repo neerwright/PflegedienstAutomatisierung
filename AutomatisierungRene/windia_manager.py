@@ -7,6 +7,7 @@ import re
 from catalog_data import Catalog
 from leistungsnachweis_navigation import *
 
+
 INSURANCE_K_DROPDOWN_TITLE = "Behandlungspflege   ja / nein"
 INSURANCE_P_DROPDOWN_TITLE = "Pflegeversicherung   ja / nein"
 PFLICHT_CHECKBOX_TITLE = "nur Pflichtbesuch"
