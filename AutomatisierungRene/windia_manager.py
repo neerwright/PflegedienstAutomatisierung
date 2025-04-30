@@ -177,10 +177,6 @@ class WindiaManager:
         
             
     def issue_an_invoice(self):
-        #print(self.patient_data)
-        #print(self.catalog_data)
-        #print(self.patient_insurance_data)
-        
         #open_patient_window -> add new patient
         self.autoManager.open_window(WindiaWindows.PATIENT)
         self.add_new_patient()
@@ -219,7 +215,7 @@ class WindiaManager:
             print ("Pflegegrad muss zwischen 1 und 5 sein")
             return
         
-        self.autoManager.click_button(PatientAutoID.PG_BUTTON)
+        self.autoManager.click_button(Windia_Buttons.PG_BTN)
         print("click")
         self.autoManager.get_and_wait_for_window(WindiaWindows.CARE_DEGREE_HISTORY, 5)
         if new:
@@ -292,7 +288,7 @@ class WindiaManager:
         #LN.child_window(auto_id="120", control_type="Edit").set_text("3")
         
         self.autoManager.input_text(LN_ids.LN_MONTH, "4", self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5))
-        #self.autoManager.click_button(PatientAutoID.OK_BUTTON)
+        #self.autoManager.click_button(Windia_Buttons.OK_BUTTON_BTN)
         #print(find_caregiver_row(self.autoManager))
         
         

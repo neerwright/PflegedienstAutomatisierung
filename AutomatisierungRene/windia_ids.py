@@ -25,11 +25,12 @@ class CatalogAutoID(Enum):
     PRICE = 80
     NUMBER = 85
     ROW = 67
+    
 class RelativesAutoID(Enum):
     NAME = 23
     SURNAME = 22
     TELEPHONE = 18
-    CLOSE_BTN = 7
+    #CLOSE_BTN = 7
     
 class PatientAutoID(Enum):
     NAME = 193
@@ -62,19 +63,27 @@ class PatientAutoID(Enum):
 
     LEISTUNG = 6
 
-    PG_BUTTON = 38
+    #PG_BUTTON = 38
 
     PG_HISTORY_TOOLBAR_NEW = -10  #number used for the x offset in the toolbar to click on the button via coordinates
     PG_HISTORY_TOOLBAR_EDIT = -110
     PG_HISTORY_TOOLBAR_SAFE = -110
     PG_HISTORY_TOOLBAR_CLOSE = -290
 
-    OK_BUTTON = 2
+    #OK_BUTTON = 2
     
 
 class LN_ids(Enum):
-    EINSTELLUNG_BTN = 73
-    LN_PRINT_once = 88
+    #EINSTELLUNG_BTN = 73
+    #LN_PRINT_once = 88
     UNDER_VH_BUTTON_EDIT = 105
-    CANCEL_BTN = 61
+    #CANCEL_BTN = 61
     LN_MONTH = 120
+    
+class Windia_Buttons(Enum):
+    LN_CANCEL_BTN = 61 #
+    LN_EINSTELLUNG_BTN = 73 # 
+    LN_PRINT_ONCE_BTN = 88 # 
+    PG_BTN = 38 #
+    OK_BUTTON_BTN = 2 #
+    RELATIVE_CLOSE_BTN = 7

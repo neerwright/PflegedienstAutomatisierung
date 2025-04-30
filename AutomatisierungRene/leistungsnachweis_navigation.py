@@ -1,5 +1,5 @@
 from automation_manager import AutomationManager
-from windia_ids import WindiaWindows, LN_ids
+from windia_ids import WindiaWindows, LN_ids , Windia_Buttons
 from pywinauto import keyboard, mouse, findwindows, Application
 import time
 
@@ -68,7 +68,7 @@ def find_caregiver_row(automanager):
         click_distance_from_top_left(x,y,automanager,True)
         print(y)
         try:
-            btn = ln_win.child_window(auto_id=str(LN_ids.CANCEL_BTN.value), control_type="Button").wrapper_object() 
+            btn = ln_win.child_window(auto_id=str(Windia_Buttons.LN_CANCEL_BTN.value), control_type="Button").wrapper_object()  # Button changed
             
             if btn:
                 btn.invoke()
@@ -103,13 +103,13 @@ def print_leistungsnachweis(automanager : AutomationManager, type, cur_page):
     
     #click Druck LN button
     ln_win = automanager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 3)
-    rec_btn = ln_win.child_window(auto_id=str(LN_ids.EINSTELLUNG_BTN.value), control_type="Button").wrapper_object().rectangle()
+    rec_btn = ln_win.child_window(auto_id=str(Windia_Buttons.LN_EINSTELLUNG_BTN.value), control_type="Button").wrapper_object().rectangle()
     mouse.click(coords= (int(rec_btn.left) + 400 , int(rec_btn.top)))
 
     #print once
     time.sleep(4)
     ln_print_win =  automanager.get_and_wait_for_window(WindiaWindows.AUSDRUCK_LN, 3)
-    #ln_print_win.child_window(auto_id= str(LN_ids.LN_PRINT_once.value), control_type="Button").wrapper_object().click()
+    #ln_print_win.child_window(auto_id= str(Windia_Buttons.LN_PRINT_ONCE_BTN.value), control_type="Button").wrapper_object().click()
     
     #close print page
     automanager.close_window(ln_print_win)
