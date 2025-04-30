@@ -25,7 +25,6 @@ def read_VE_fromdocx_file():
         print()
         print(patients)
 
-read_VE_fromdocx_file()
 
 
 def input_hours_for_bill(automationManager : AutomationManager, max_hours : int):

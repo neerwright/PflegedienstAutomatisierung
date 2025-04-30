@@ -14,6 +14,9 @@ class UImanager():
     root = None
     menuFrame = None
     formFrame = None
+    invoice_button = None
+    patient_button = None
+
     
     def __init__(self, windiaManager : WindiaManager):
         self.windiaManager = windiaManager
@@ -27,6 +30,8 @@ class UImanager():
     ######## Main Menue #####################
     def start(self):
         self.main_menu()
+        self.render_invoice()
+        print("button: " + str(self.patient_button))
         self.root.mainloop()
 
         
@@ -35,17 +40,20 @@ class UImanager():
         self.formFrame = tb.Frame(self.root)
         self.menuFrame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
         self.formFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
-        invoice_button = tb.Button(self.menuFrame, text= "Rechnung", command=lambda: self.render_invoice())
-        invoice_button.grid(row=0, column=0 , padx=20)
-        patient_button = tb.Button(self.menuFrame, text= "Neuer Patient", command=lambda: self.render_new_patient_form())
-        patient_button.grid(row=0, column=1 , padx=20)
+        self.invoice_button = tb.Button(self.menuFrame, text= "Rechnung", bootstyle="danger", command=lambda: self.render_invoice())
+        self.invoice_button.grid(row=0, column=0 , padx=20)
+        self.patient_button = tb.Button(self.menuFrame, text= "Neuer Patient", bootstyle="default", command=lambda: self.render_new_patient_form())
+        self.patient_button.grid(row=0, column=1 , padx=20)
+        
         
         
     
-    ######## Invoise #####################
+    ######## Invoice #####################
     def render_invoice(self):
         self.clear_frame(self.formFrame)
-        print("cleared")
+        self.invoice_button.configure(bootstyle="danger")
+        self.patient_button.configure(bootstyle="default")
+
         studentFrame = tb.Labelframe(self.formFrame, text="Student")
         uniFrame = tb.Labelframe(self.formFrame, text = "Uni/Schule Abrechnung")
         studentFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
@@ -64,7 +72,7 @@ class UImanager():
         
         sendFrame = tb.Frame(self.formFrame)
         sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-        send_button = tb.Button(sendFrame, text="Rechung erstellen starten", style='Outline.TButton' , command=lambda: self.start_invoice([name.get(), surname.get(), bday.get(), gender.get(), school.get(), wage.get(), max_hours.get(), start_date1.get(), end_date1.get(), hours1.get(),start_date2.get(), end_date2.get(), hours2.get() ]))
+        send_button = tb.Button(sendFrame, text="Rechung erstellen starten", style='Outline.TButton' , command=lambda: self.start_invoice([name.get(), surname.get(), bday.entry.get().replace("/", "."), gender.get(), school.get(), wage.get(), max_hours.get(), start_date1.entry.get().replace("/", "."), end_date1.entry.get().replace("/", "."), hours1.get(),start_date2.entry.get().replace("/", "."), end_date2.entry.get().replace("/", "."), hours2.get() ]))
         send_button.grid(row=0, column=0)
             
     
@@ -78,7 +86,7 @@ class UImanager():
         s_surname = tb.Label(labelframe, text = "Vorname: ")
         s_surname_box = tb.Entry(labelframe)
         bday = tb.Label(labelframe, text="Geburtstag")
-        bday_box = tb.Entry(labelframe)
+        bday_box = tb.DateEntry(labelframe, bootstyle="default")
         
         
         s_name.grid(row=0, column=0)
@@ -123,26 +131,27 @@ class UImanager():
         return school_var, wage_box, max_hours_box
     
     def praxiseinsatz_ui(self, labelframe):
+        
         start_date = tb.Label(labelframe, text="Von: ")
-        start_date_box = tb.Entry(labelframe)
-        start_date.grid(row=0, column=0)
-        start_date_box.grid(row=0, column=1)
+        start_date_box = tb.DateEntry(labelframe, bootstyle="default")
+        start_date.grid(row=0, column=0 , padx=10, pady=10)
+        start_date_box.grid(row=0, column=1, padx=10, pady=10)
         
         end_date = tb.Label(labelframe, text="bis: ")
-        end_date_box = tb.Entry(labelframe)
-        end_date.grid(row=0, column=2)
-        end_date_box.grid(row=0, column=3)
-        
+        end_date_box =  tb.DateEntry(labelframe, bootstyle="default")
+        end_date.grid(row=0, column=2, padx=10, pady=10)
+        end_date_box.grid(row=0, column=3, padx=10,  pady=10)
+    
         hours = tb.Label(labelframe, text="Geleistete Stunden: ")
         hours_box = tb.Entry(labelframe)
-        hours.grid(row=1, column=0)
-        hours_box.grid(row=1, column=1)
+        hours.grid(row=1, column=0, padx=10, pady=10)
+        hours_box.grid(row=1, column=1, padx=10, pady=10)
         
         return start_date_box, end_date_box, hours_box
     
     def start_invoice(self, values):
         print (values)
-        
+        return
         print("making an invoice....")
         self.windiaManager.patient_data = Patient(values[0], values[1], values[3], values[2], "", "", "", "","", "15.01.2025","","")
         self.windiaManager.catalog_data = Catalog(values[5], [str(values[7]) + " - " + str(values[8]) , str(values[10]) + " - " + str(values[11])], [str(values[9]), str(values[12])] )
@@ -150,9 +159,14 @@ class UImanager():
         self.windiaManager.insert_invoice_data(values[4])
         self.windiaManager.issue_an_invoice()
         
+    
     ######## New Patient #####################
     def render_new_patient_form(self):
         self.clear_frame(self.formFrame)
+
+        self.invoice_button.configure(bootstyle="default")
+        self.patient_button.configure(bootstyle="danger")
+        
         stammFrame = tb.Labelframe(self.formFrame, text="Stamm")
         careFrame = tb.Labelframe(self.formFrame, text = "Pflege")
         stammFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
@@ -166,7 +180,7 @@ class UImanager():
         
         sendFrame = tb.Frame(self.formFrame)
         sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-        send_button = tb.Button(sendFrame, text="Neuer Patient anlegen starten",  style='Outline.TButton' ,  command=lambda: self.start_new_patient([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.get(), gender.get(),tel_box.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor1.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get(), start_date.get(), doctor2.get()]))
+        send_button = tb.Button(sendFrame, text="Neuer Patient anlegen starten",  style='Outline.TButton' ,  command=lambda: self.start_new_patient([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.entry.get().replace("/", "."), gender.get(),tel_box.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor1.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get(), start_date.get(), doctor2.get()]))
         send_button.grid(row=0, column=0)
         
     def stamm_ui(self, labelframe):
