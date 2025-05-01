@@ -27,28 +27,29 @@ def read_VE_fromdocx_file(path : str):
         
 
 
-def input_hours_for_bill(automationManager : AutomationManager, max_hours : int):
+def input_hours_for_bill(automationManager : AutomationManager, max_hours : int, interships : int):
     offset = 20
     x =  600
     y =  380
     
     #click Selbstzahler tab
     automationManager.click_inside_window(WindiaWindows.LEISTUNGS_NACHWEIS, 6/9 , 1/8)
-    click_distance_from_top_left(x,y, automationManager)
     
+    
+    click_distance_from_top_left(x,y, automationManager)
     keyboard.send_keys(str(max_hours))
     y += offset 
     #Click inside Table
     click_distance_from_top_left(x,y,automationManager)
     y += offset 
     
+    if interships >= 2:
+        click_distance_from_top_left(x,y,automationManager)
+        y += offset 
+        keyboard.send_keys(str(max_hours))
 
-    click_distance_from_top_left(x,y,automationManager)
-    y += offset 
-    keyboard.send_keys(str(max_hours))
-
-    click_distance_from_top_left(x,y,automationManager)
-    y += offset 
+        click_distance_from_top_left(x,y,automationManager)
+        y += offset 
 
     
     #click_distance_from_top_left( 3/10, 37/100, W.autoManager)

@@ -75,21 +75,33 @@ class UImanager():
         self.invoice_button.configure(bootstyle="default" , style="default.TButton")
         
         pathEntryFrame = tb.Frame(self.formFrame)
+        pathShowFrame = tb.Frame(self.formFrame)
+        month_frame = tb.Frame(self.formFrame)
         dataFrame = tb.Labelframe(self.formFrame, text = "Patient / LN")
+        sendFrame = tb.Frame(self.formFrame)
+        
         pathEntryFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
-        dataFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        pathShowFrame.grid(row=1, column=0, padx=20, pady=20, sticky="nw")
+        month_frame.grid(row=2, column=0, padx=20, pady=20, sticky="nw")
+        sendFrame.grid(row=3, column=0, padx=20, pady=20, sticky="w")
+        dataFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
+        
+        
+        month = tb.Label(month_frame, text= "Monat: ")
+        month_box = tb.Entry(month_frame)
+        month.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
+        month_box.grid(row=0, column=1, padx=20, pady=20, sticky="nw")
         
         tb.Label(pathEntryFrame, text='Leistungsnachweise Zettel auswählen: ').grid(row=0, column=0, padx=10, pady=2, sticky='ew')
-        curr_path = tb.Label(pathEntryFrame, text=f'Ausgewählte Datei: {self.ln_path}')
-        curr_path.grid(row=1, column=0, padx=10, pady=2, sticky='ew')
-        #e1 = tb.Entry(self.formFrame, textvariable=search_path_var)
-        #e1.grid(row=0, column=1, sticky='ew', padx=10, pady=2)
+        curr_path = tb.Label(pathShowFrame, text=f'Ausgewählte Datei: {self.ln_path}')
+        curr_path.grid(row=0, column=0, padx=10, pady=2, sticky='ew')
+
         button = tb.Button(pathEntryFrame, text='Word Datei wählen', command=lambda: self.on_browse(curr_path, dataFrame), style='primary.TButton')
         button.grid(row=0, column=2, sticky='ew', pady=2, ipadx=10)
         
-        sendFrame = tb.Frame(self.formFrame)
-        sendFrame.grid(row=2, column=0, padx=20, pady=20, sticky="w")
-        send_button = tb.Button(sendFrame, text="Leistungsnachweise drucken starten", style='Outline.TButton' , command=lambda: self.start_printing_ln())
+        
+        #month_box.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+        send_button = tb.Button(sendFrame, text="Leistungsnachweise drucken starten", style='Outline.TButton' , command=lambda: self.start_printing_ln(month_box.get()))
         send_button.grid(row=0, column=0)
 
     
@@ -110,9 +122,9 @@ class UImanager():
               tb.Label(frame, text=str(ln_type)).grid(row=i, column=1, padx=10, pady=2, sticky='ew')
               i +=1
               
-    def start_printing_ln(self):
+    def start_printing_ln(self, month):
         if self.ln_path:
-            self.windiaManager.print_lns(self.ln_path)
+            self.windiaManager.print_lns(self.ln_path, month)
 
         
         
@@ -142,7 +154,7 @@ class UImanager():
         
         sendFrame = tb.Frame(self.formFrame)
         sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-        send_button = tb.Button(sendFrame, text="Rechung erstellen starten", style='Outline.TButton' , command=lambda: self.start_invoice([name.get(), surname.get(), bday.entry.get().replace("/", "."), gender.get(), school.get(), wage.get(), max_hours.get(), start_date1.entry.get().replace("/", "."), end_date1.entry.get().replace("/", "."), hours1.get(),start_date2.entry.get().replace("/", "."), end_date2.entry.get().replace("/", "."), hours2.get() ]))
+        send_button = tb.Button(sendFrame, text="Rechung erstellen starten", style='Outline.TButton' , command=lambda: self.start_invoice([name.get(), surname.get(), bday.entry.get().replace("/", "."), gender.get(), school.get(), wage.get(), max_hours.get(), start_date1.entry.get().replace("/", "."), end_date1.entry.get().replace("/", "."), hours1.get(),start_date2.entry.get().replace("/", "."), end_date2.entry.get().replace("/", "."), hours2.get() ], max_hours.get()))
         send_button.grid(row=0, column=0)
             
     
@@ -219,7 +231,7 @@ class UImanager():
         
         return start_date_box, end_date_box, hours_box
     
-    def start_invoice(self, values):
+    def start_invoice(self, values, max_hours):
         print (values)
         
         print("making an invoice....")
@@ -227,7 +239,7 @@ class UImanager():
         self.windiaManager.catalog_data = Catalog(values[5], [str(values[7]) + " - " + str(values[8]) , str(values[10]) + " - " + str(values[11])], [str(values[9]), str(values[12])] )
         self.windiaManager.patient_insurance_data = PatientInsuranceInfo("XX", values[4], "", "", "", "", "", "", "", False)
         self.windiaManager.insert_invoice_data(values[4])
-        self.windiaManager.issue_an_invoice()
+        self.windiaManager.issue_an_invoice(max_hours)
         
     
     ######## New Patient #####################
@@ -316,9 +328,8 @@ class UImanager():
         insurance_number = tb.Label(labelframe, text="Vers.Nr.: ")
         care_deg = tb.Label(labelframe, text="Pflegegrad: ")
         care_deg_date = tb.Label(labelframe, text="Seit: ")
-        #doctor_box1 = tb.Entry(labelframe)
-        #doctor_box2= tb.Entry(labelframe)
-        #insurance_box = tb.Entry(labelframe)
+  
+  
         insurance_number_box = tb.Entry(labelframe)
         care_deg_box = tb.Entry(labelframe)
         care_deg_date_box = tb.Entry(labelframe)

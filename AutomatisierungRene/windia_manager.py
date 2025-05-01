@@ -177,7 +177,7 @@ class WindiaManager:
 
         
             
-    def issue_an_invoice(self):
+    def issue_an_invoice(self, max_hours):
         #open_patient_window -> add new patient
         self.autoManager.open_window(WindiaWindows.PATIENT)
         self.add_new_patient()
@@ -189,7 +189,10 @@ class WindiaManager:
         
         self.autoManager.close_window()    
         self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
-        input_hours_for_bill(self.autoManager, 200)
+        
+        
+        interships = 2 if self.catalog_data.dates[1] else 1
+        input_hours_for_bill(self.autoManager, max_hours, interships)
         
     def _save_new_patient(self):
         
@@ -260,9 +263,13 @@ class WindiaManager:
             
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y)
             
-    def print_lns(self, path):
-        #test_patients = [ "Auer, Alexander", "Balog, Loveleen", "Begiert, Aleksander", "Egeler, Emil" , "Berner, Anjulie"]
-        #ln_type = [ "V", "E+V", "E+V", "E", "E"]
+    def print_lns(self, path, month):
+        self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
+        time.sleep(3)
+        #input Month
+        LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
+        self.autoManager.input_text(LN_ids.LN_MONTH, str(month), LN)
+        
         patient_ln_type = read_VE_fromdocx_file(path)
 
         cur_page = "E"
