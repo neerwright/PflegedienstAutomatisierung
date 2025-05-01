@@ -260,18 +260,22 @@ class WindiaManager:
             
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y)
             
-    def print_lns(self):
-        test_patients = [ "Auer, Alexander", "Balog, Loveleen", "Begiert, Aleksander", "Egeler, Emil" , "Berner, Anjulie"]
-        ln_type = [ "V", "E+V", "E+V", "E", "E"]
+    def print_lns(self, path):
+        #test_patients = [ "Auer, Alexander", "Balog, Loveleen", "Begiert, Aleksander", "Egeler, Emil" , "Berner, Anjulie"]
+        #ln_type = [ "V", "E+V", "E+V", "E", "E"]
+        patient_ln_type = read_VE_fromdocx_file(path)
+
         cur_page = "E"
-        for i, patient in enumerate(test_patients):
+        for patient, ln_type in patient_ln_type.items():
+            print(str(patient) + " : " + str(ln_type))
+            
             self.autoManager.select_patient(patient)
             self.autoManager.close_window()
             self.autoManager.cur_selected_patient = patient
 
             self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
             
-            if ln_type[i] == "E+V":
+            if ln_type == "E+V":
                 print_leistungsnachweis(self.autoManager, "E", "E")
                 time.sleep(5)
                 self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
@@ -280,7 +284,7 @@ class WindiaManager:
                 continue
 
             
-            print_leistungsnachweis(self.autoManager, ln_type[i], cur_page)
+            print_leistungsnachweis(self.autoManager, ln_type, cur_page)
             cur_page = "E"
                 
     def test(self):

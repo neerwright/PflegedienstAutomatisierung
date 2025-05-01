@@ -87,11 +87,9 @@ class UImanager():
         
         sendFrame = tb.Frame(self.formFrame)
         sendFrame.grid(row=2, column=0, padx=20, pady=20, sticky="w")
-        send_button = tb.Button(sendFrame, text="Leistungsnachweise drucken starten", style='Outline.TButton' , command=lambda: self.start_ln())
+        send_button = tb.Button(sendFrame, text="Leistungsnachweise drucken starten", style='Outline.TButton' , command=lambda: self.start_printing_ln())
         send_button.grid(row=0, column=0)
-        
-    def start_ln(self):
-        pass
+
     
     def on_browse(self, curr_path, dataFrame):
         filepath = filedialog.askopenfilename()
@@ -109,6 +107,13 @@ class UImanager():
               tb.Label(frame, text=str(patient)).grid(row=i, column=0, padx=10, pady=2, sticky='ew')
               tb.Label(frame, text=str(ln_type)).grid(row=i, column=1, padx=10, pady=2, sticky='ew')
               i +=1
+              
+    def start_printing_ln(self):
+        if self.ln_path:
+            self.windiaManager.print_lns(self.ln_path)
+
+        
+        
         
     ######## Invoice #####################
     def render_invoice(self):
@@ -358,5 +363,6 @@ class UImanager():
 doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
 insurance_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/both_insurances.txt"
 dm = localDataManager(doctors_list_path,insurance_list_path)
-ui = UImanager("", dm.get_doctors(), dm.get_insurances())
+W = WindiaManager()
+ui = UImanager(W, dm.get_doctors(), dm.get_insurances())
 ui.start()

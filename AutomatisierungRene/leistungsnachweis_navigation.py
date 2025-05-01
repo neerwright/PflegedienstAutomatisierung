@@ -21,8 +21,6 @@ def read_VE_fromdocx_file(path : str):
                 name = table.cell(row, 0).text
                 #print("name: " + str(name))
                 patients[name] = LN_type
-            print()
-        print()
         #print(patients)
         return patients
         
