@@ -23,7 +23,7 @@ class UImanager():
     
     ln_path = ""
     
-    def __init__(self, windiaManager : WindiaManager, doctors, insuranses):
+    def __init__(self, windiaManager : WindiaManager, doctors, insuranses, base_ln_path):
         self.windiaManager = windiaManager
         
         self.root = tb.Window(themename="superhero")
@@ -34,6 +34,8 @@ class UImanager():
         
         self.doctors = doctors
         self.insuranses = insuranses
+        
+        self.ln_path = base_ln_path
 
     ######## Main Menue #####################
     def start(self):
@@ -362,7 +364,8 @@ class UImanager():
     
 doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
 insurance_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/both_insurances.txt"
+base_ln_path = "Hello"
 dm = localDataManager(doctors_list_path,insurance_list_path)
 W = WindiaManager()
-ui = UImanager(W, dm.get_doctors(), dm.get_insurances())
+ui = UImanager(W, dm.get_doctors(), dm.get_insurances(), base_ln_path)
 ui.start()
