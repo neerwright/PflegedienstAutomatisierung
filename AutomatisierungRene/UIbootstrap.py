@@ -30,7 +30,7 @@ class UImanager():
 
         self.root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
         self.root.title("Windia Automation")
-        self.root.geometry("900x1200")
+        self.root.geometry("1000x1400")
         
         self.doctors = doctors
         self.insuranses = insuranses
@@ -152,20 +152,20 @@ class UImanager():
         bday_box = tb.DateEntry(labelframe, bootstyle="default")
         
         
-        s_name.grid(row=0, column=0)
-        s_name_box.grid(row=0, column=1)
+        s_name.grid(row=0, column=0, pady=10)
+        s_name_box.grid(row=0, column=1, pady=10)
 
-        s_surname.grid(row=1, column=0)
-        s_surname_box.grid(row=1, column=1)
+        s_surname.grid(row=1, column=0, pady=10)
+        s_surname_box.grid(row=1, column=1, pady=10)
 
-        bday.grid(row=2, column=0)
-        bday_box.grid(row=2, column=1)
+        bday.grid(row=2, column=0, pady=10)
+        bday_box.grid(row=2, column=1, pady=10)
         
         gender = tb.StringVar()
         w_radio = tb.Radiobutton(labelframe, text="W", variable=gender, value="W", command=lambda: print( gender.get()))
         m_radio = tb.Radiobutton(labelframe, text="M", variable=gender , value="M",  command=lambda: print( gender.get()))
-        w_radio.grid(row=3, column=0)
-        m_radio.grid(row=3, column=1)
+        w_radio.grid(row=3, column=0, pady=10)
+        m_radio.grid(row=3, column=1, pady=10)
 
         
         return s_name_box, s_surname_box, bday_box, gender
@@ -259,14 +259,14 @@ class UImanager():
         tel = tb.Label(labelframe, text="Telephon: ")
         tel_box = tb.Entry(labelframe)
             
-        city.grid(row=4, column=0)
-        city_box.grid(row=4, column=1)
-        zip.grid(row=5, column=0)
-        zip_box.grid(row=5, column=1)
-        street.grid(row=6, column=0)
-        street_box.grid(row=6, column=1)
-        tel.grid(row=7, column=0)
-        tel_box.grid(row=7, column=1)
+        city.grid(row=4, column=0, pady=10)
+        city_box.grid(row=4, column=1, pady=10)
+        zip.grid(row=5, column=0, pady=10)
+        zip_box.grid(row=5, column=1, pady=10)
+        street.grid(row=6, column=0, pady=10)
+        street_box.grid(row=6, column=1, pady=10)
+        tel.grid(row=7, column=0, pady=10)
+        tel_box.grid(row=7, column=1, pady=10)
         
         return city_box, zip_box, street_box, s_name, s_surname, bday, gender, tel_box
 
@@ -295,9 +295,11 @@ class UImanager():
         
         doctor1_var = tb.StringVar()
         doctor2_var = tb.StringVar()
+        insurance_var = tb.StringVar()
         
-        doc1_combobox = tb.OptionMenu(labelframe, doctor1_var,self.doctors[0], *self.doctors)
-        doc2_combobox = tb.OptionMenu(labelframe, doctor2_var,self.doctors[0], *self.doctors)
+        doc1_combobox = tb.OptionMenu(labelframe, doctor1_var,self.doctors[0], *self.doctors, bootstyle="secondary")
+        doc2_combobox = tb.OptionMenu(labelframe, doctor2_var,self.doctors[0], *self.doctors, bootstyle="secondary")
+        insurance_combobox = tb.OptionMenu(labelframe, insurance_var,list(self.insuranses.keys())[0], *list(self.insuranses.keys()) , bootstyle="secondary")
 
         
         
@@ -309,23 +311,23 @@ class UImanager():
         care_deg_date = tb.Label(labelframe, text="Seit: ")
         #doctor_box1 = tb.Entry(labelframe)
         #doctor_box2= tb.Entry(labelframe)
-        insurance_box = tb.Entry(labelframe)
+        #insurance_box = tb.Entry(labelframe)
         insurance_number_box = tb.Entry(labelframe)
         care_deg_box = tb.Entry(labelframe)
         care_deg_date_box = tb.Entry(labelframe)
         
-        doctor1.grid(row=0, column=0)
-        doctor2.grid(row=0, column=2)
-        doc1_combobox.grid(row=0, column=1)
-        doc2_combobox.grid(row=0, column=3)
-        insurance.grid(row=1, column=0)
-        insurance_box.grid(row=1, column=1)
-        insurance_number.grid(row=1, column=2)
-        insurance_number_box.grid(row=1, column=3)
-        care_deg.grid(row=2, column=0)
-        care_deg_date.grid(row=2, column=2)
-        care_deg_box.grid(row=2, column=1)
-        care_deg_date_box.grid(row=2, column=3)
+        doctor1.grid(row=0, column=0 , pady=10)
+        doctor2.grid(row=0, column=2, pady=10)
+        doc1_combobox.grid(row=0, column=1, pady=10)
+        doc2_combobox.grid(row=0, column=3, pady=10)
+        insurance.grid(row=1, column=0, pady=10)
+        insurance_combobox.grid(row=1, column=1, pady=10)
+        insurance_number.grid(row=1, column=2, pady=10)
+        insurance_number_box.grid(row=1, column=3, pady=10)
+        care_deg.grid(row=2, column=0, pady=10)
+        care_deg_date.grid(row=2, column=2, pady=10)
+        care_deg_box.grid(row=2, column=1, pady=10)
+        care_deg_date_box.grid(row=2, column=3, pady=10)
         
         geldleistung = IntVar()
         g_radio = tb.Radiobutton(labelframe, text="Geldleistung", variable=geldleistung, value=1, command=lambda: print(geldleistung))
@@ -334,15 +336,15 @@ class UImanager():
         
         date = tb.Label(labelframe, text="Betreuungsbeginn: ")
         date_box = tb.Entry(labelframe)
-        date.grid(row=3, column=0)
-        date_box.grid(row=3, column=1)
+        date.grid(row=3, column=0, pady=10)
+        date_box.grid(row=3, column=1, pady=10)
         
         
         
-        g_radio.grid(row=4, column=0)
-        k_radio.grid(row=4, column=1)
+        g_radio.grid(row=4, column=0, pady=10)
+        k_radio.grid(row=4, column=1, pady=10)
         
-        return doc1_combobox,doc2_combobox, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
+        return doc1_combobox,doc2_combobox, insurance_combobox, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
     
     def start_new_patient(self, values):
         print("adding patient....")
