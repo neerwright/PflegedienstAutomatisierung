@@ -1,0 +1,41 @@
+AOK BW Sindelfingen K, AOK BW Sindelfingen P
+AOK BW Stuttgart K Pflegeversicherung, AOK BW Stuttgart B Pflegeversicherung
+AOK BW Tech K, 
+AOK BW Tübingen P, 
+AOK Neckar-Alb K, AOK Neckar-Alb B
+AOK Tübingen K, AOK BW Tübingen P
+ARAG, 
+ARAG, 
+Audi BKK, Audi BKK P
+Bahn BKK K Betriebskrankenkasse, 
+Barmenia (und LBV) K, Barmenia
+Barmer, Barmer
+BARMER K, BARMER P
+BARMER K DDG Rechnungsprüfstelle, 
+BIG direkt gesund K, BIG direkt gesund P
+BKK mhplus K Krankenkasse, BKK mhplus P
+BKK VBU K Kundencenter intern, 
+BKK Verbund K, BKK Verbund P  
+Bosch BKK K, Bosch BKK P
+Burghalde Sindelfingen, 
+Continentale K Betriebskrankenkasse , Continentale P Betriebskrankenkasse Pflegekasse
+DAK K, DAK P
+DeBeKa K , DeBeKa P
+Deutsche BKK K Filiale Erfurt, Deutsche BKK P Pflegekasse 
+IKK Classic (West)  K, IKK Classic (West) P
+IKK Classic K Pflegezentrum, IKK Classic P Hauptverwaltung
+IKK gesund plus K, IKK gesund plus P
+Kaufmänn.Krankenkasse K, Kaufmänn.Krankenkasse P
+Knappschaft-Bahn-See K, Knappschaft-Bahn-See P
+Landratsamt Tübingen Abteilung Soziales, 
+Landratsamt Tübingen Abteilung: Soziales, 
+Mercedes-Benz BKK K, Mercedes-Benz BKK P Pflegekasse
+MOKI Mobile Kinderkrankenpflege GmbH, 
+R+V BKK - Team Pflege, R+V BKK - Team Pflege
+SBK K, SBK P
+Selbstzahler K, Selbstzahler P
+Signal Krankenversicherung, 
+SVLFG K, SVLFG P
+Techniker Krankenkasse K, Techniker Krankenkasse P
+Universitätsklinikum Tübingen Stabstelle KV4 Pflegedirektion, 
+Winterhaldenschule, 

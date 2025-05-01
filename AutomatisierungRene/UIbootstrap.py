@@ -8,6 +8,7 @@ import pathlib
 from tkinter.filedialog import askdirectory, asksaveasfilename
 from tkinter import filedialog
 from leistungsnachweis_navigation import *
+from local_db import * 
 
 class UImanager():
     windiaManager = None
@@ -17,10 +18,12 @@ class UImanager():
     invoice_button = None
     patient_button = None
     ln_button = None
+    doctors = []
+    insuranses = {}
     
     ln_path = ""
     
-    def __init__(self, windiaManager : WindiaManager):
+    def __init__(self, windiaManager : WindiaManager, doctors, insuranses):
         self.windiaManager = windiaManager
         
         self.root = tb.Window(themename="superhero")
@@ -28,6 +31,9 @@ class UImanager():
         self.root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
         self.root.title("Windia Automation")
         self.root.geometry("900x1200")
+        
+        self.doctors = doctors
+        self.insuranses = insuranses
 
     ######## Main Menue #####################
     def start(self):
@@ -35,6 +41,8 @@ class UImanager():
         self.render_invoice()
         print("button: " + str(self.patient_button))
         self.root.mainloop()
+        
+        
 
         
     def main_menu(self):
@@ -43,19 +51,26 @@ class UImanager():
         self.menuFrame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
         self.formFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
         
-        self.invoice_button = tb.Button(self.menuFrame, text= "Rechnung", bootstyle="danger", command=lambda: self.render_invoice())
+        #bigger button style:
+        big_default_btn_style = tb.Style()
+        big_default_btn_style.configure("default.TButton", font=("Helvetica", 18))
+        big_red_btn_style = tb.Style()
+        big_red_btn_style.configure("danger.TButton", font=("Helvetica", 18))
+        
+        
+        self.invoice_button = tb.Button(self.menuFrame, text= "Rechnung", bootstyle="danger", style="danger.TButton", command=lambda: self.render_invoice())
         self.invoice_button.grid(row=0, column=0 , padx=20)
-        self.patient_button = tb.Button(self.menuFrame, text= "Neuer Patient", bootstyle="default", command=lambda: self.render_new_patient_form())
+        self.patient_button = tb.Button(self.menuFrame, text= "Neuer Patient", bootstyle="default", style="default.TButton", command=lambda: self.render_new_patient_form() )
         self.patient_button.grid(row=0, column=1 , padx=20)
-        self.ln_button = tb.Button(self.menuFrame, text= "Leistungsnachweise", bootstyle="default", command=lambda: self.render_ln())
+        self.ln_button = tb.Button(self.menuFrame, text= "Leistungsnachweise", bootstyle="default", style="default.TButton", command=lambda: self.render_ln())
         self.ln_button.grid(row=0, column=2 , padx=20)
         
     ######## LeistungsNachweise #####################   
     def render_ln(self):
         self.clear_frame(self.formFrame)
-        self.ln_button.configure(bootstyle="danger")
-        self.patient_button.configure(bootstyle="default")
-        self.invoice_button.configure(bootstyle="default")
+        self.ln_button.configure(bootstyle="danger", style="danger.TButton")
+        self.patient_button.configure(bootstyle="default", style="default.TButton")
+        self.invoice_button.configure(bootstyle="default" , style="default.TButton")
         
         pathEntryFrame = tb.Frame(self.formFrame)
         dataFrame = tb.Labelframe(self.formFrame, text = "Patient / LN")
@@ -98,9 +113,9 @@ class UImanager():
     ######## Invoice #####################
     def render_invoice(self):
         self.clear_frame(self.formFrame)
-        self.invoice_button.configure(bootstyle="danger")
-        self.patient_button.configure(bootstyle="default")
-        self.ln_button.configure(bootstyle="default")
+        self.invoice_button.configure(bootstyle="danger", style="danger.TButton")
+        self.patient_button.configure(bootstyle="default", style="default.TButton")
+        self.ln_button.configure(bootstyle="default", style="default.TButton")
 
         studentFrame = tb.Labelframe(self.formFrame, text="Student")
         uniFrame = tb.Labelframe(self.formFrame, text = "Uni/Schule Abrechnung")
@@ -159,7 +174,7 @@ class UImanager():
         school = tb.Label(labelframe, text="Uni/Schule: ")
         school_var = tb.StringVar()
         
-        unis = ["Universitätsklinikum Tübingen", "Freiburg"]
+        unis = ["Universitätsklinikum Tübingen", "Winterhaldenschule"]
         #school_var.set(unis[0])
         school_combobox = tb.OptionMenu(labelframe, school_var,unis[0], *unis)
         school_combobox.grid(row=0, column=1)
@@ -212,9 +227,9 @@ class UImanager():
     def render_new_patient_form(self):
         self.clear_frame(self.formFrame)
 
-        self.invoice_button.configure(bootstyle="default")
-        self.ln_button.configure(bootstyle="default")
-        self.patient_button.configure(bootstyle="danger")
+        self.invoice_button.configure(bootstyle="default", style="default.TButton")
+        self.ln_button.configure(bootstyle="default", style="default.TButton")
+        self.patient_button.configure(bootstyle="danger", style="danger.TButton")
         
         stammFrame = tb.Labelframe(self.formFrame, text="Stamm")
         careFrame = tb.Labelframe(self.formFrame, text = "Pflege")
@@ -277,14 +292,23 @@ class UImanager():
     
     
     def care_ui(self,labelframe):
+        
+        doctor1_var = tb.StringVar()
+        doctor2_var = tb.StringVar()
+        
+        doc1_combobox = tb.OptionMenu(labelframe, doctor1_var,self.doctors[0], *self.doctors)
+        doc2_combobox = tb.OptionMenu(labelframe, doctor2_var,self.doctors[0], *self.doctors)
+
+        
+        
         doctor1 = tb.Label(labelframe, text="Hausarzt: ")
         doctor2 = tb.Label(labelframe, text="Arzt2: ")
         insurance = tb.Label(labelframe, text="Krankenkasse: ")
         insurance_number = tb.Label(labelframe, text="Vers.Nr.: ")
         care_deg = tb.Label(labelframe, text="Pflegegrad: ")
         care_deg_date = tb.Label(labelframe, text="Seit: ")
-        doctor_box1 = tb.Entry(labelframe)
-        doctor_box2= tb.Entry(labelframe)
+        #doctor_box1 = tb.Entry(labelframe)
+        #doctor_box2= tb.Entry(labelframe)
         insurance_box = tb.Entry(labelframe)
         insurance_number_box = tb.Entry(labelframe)
         care_deg_box = tb.Entry(labelframe)
@@ -292,8 +316,8 @@ class UImanager():
         
         doctor1.grid(row=0, column=0)
         doctor2.grid(row=0, column=2)
-        doctor_box1.grid(row=0, column=1)
-        doctor_box2.grid(row=0, column=3)
+        doc1_combobox.grid(row=0, column=1)
+        doc2_combobox.grid(row=0, column=3)
         insurance.grid(row=1, column=0)
         insurance_box.grid(row=1, column=1)
         insurance_number.grid(row=1, column=2)
@@ -318,7 +342,7 @@ class UImanager():
         g_radio.grid(row=4, column=0)
         k_radio.grid(row=4, column=1)
         
-        return doctor_box1,doctor_box2, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
+        return doc1_combobox,doc2_combobox, insurance_box, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
     
     def start_new_patient(self, values):
         print("adding patient....")
@@ -328,5 +352,9 @@ class UImanager():
         self.windiaManager.patient_insurance_data = PatientInsuranceInfo(values[13], values[12], values[12], values[14], values[15],values[11],values[18], [values[8],values[9],values[10]], "", values[16] )
         self.windiaManager.add_new_patient()
     
-ui = UImanager("")
+    
+doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
+insurance_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/both_insurances.txt"
+dm = localDataManager(doctors_list_path,insurance_list_path)
+ui = UImanager("", dm.get_doctors(), dm.get_insurances())
 ui.start()
