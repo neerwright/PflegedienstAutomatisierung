@@ -330,13 +330,13 @@ class WindiaManager:
         time.sleep(5)
         self.autoManager.open_rechnungslegung()
         
-    def _play_success_sound():
+    def _play_success_sound(self):
         pygame.mixer.init()
-        pygame.mixer.music.load("PflegedienstAutomatisierung\AutomatisierungRene\successSound.mp3")
+        pygame.mixer.music.load("AutomatisierungRene\successSound.mp3")
         pygame.mixer.music.play()  
         time.sleep(2)   
 
-#W = WindiaManager()
+
 #W._save_invoice_and_open_invoice_page()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
