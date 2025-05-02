@@ -6,8 +6,9 @@ from windia_ids import *
 import re
 from catalog_data import Catalog
 from leistungsnachweis_navigation import *
-
+from findDocSelenium import findDocSelenium
 import pygame
+from local_db import localDataManager
 
 INSURANCE_K_DROPDOWN_TITLE = "Behandlungspflege   ja / nein"
 INSURANCE_P_DROPDOWN_TITLE = "Pflegeversicherung   ja / nein"
@@ -23,11 +24,14 @@ class WindiaManager:
     switched = False
     patient_invoice = None
     autoManager = None
-    
+    docSelenium = None
+    data_manager = None
 
-    def __init__(self):
+    def __init__(self, dm : localDataManager):
         self.autoManager = AutomationManager()
         
+        self.data_manager = dm
+
     def input_stamm(self):
         if not self.patient_data or not self.patient_insurance_data:
             raise Exception("patient_data needs to be filled before a new patient is added")
@@ -49,11 +53,12 @@ class WindiaManager:
             self.autoManager.input_text(PatientAutoID.INSURANVE_NUMBER, insurance_number)
 
     def input_insurance_p(self):
-        self.input_insurance( i_dropdown=PatientAutoID.INSURANCE_P_DROPDOWN  ,insurance=self.patient_insurance_data.p_insurance , dropdown_title= INSURANCE_P_DROPDOWN_TITLE )
+        self.input_insurance( i_dropdown=PatientAutoID.INSURANCE_P_DROPDOWN  ,insurance=self.data_manager.get_insurances().get(self.patient_insurance_data.k_insurance) , dropdown_title= INSURANCE_P_DROPDOWN_TITLE )
         if self.patient_insurance_data.pflicht_leistung:
             self.autoManager.check_pane_tickbox(PFLICHT_CHECKBOX_TITLE)
         #-- save and edit to change degree of care
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 5/12 , 9/10)
+        time.sleep(1)
         self.autoManager._click_popup_window_away("6", "WinDIA-Meldung") # soll ort übernommen werden - ja button
         time.sleep(0.1)
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 4/9 , 9/10)
@@ -67,7 +72,15 @@ class WindiaManager:
             self.patient_data.zip = "72076"
             self.patient_data.city = "Tübingen"
 
-    def add_new_patient(self):
+    def add_new_patient(self, new_doc = None):
+        
+        if new_doc:
+            print("new doc!! " + str(new_doc))
+            self.docSelenium = findDocSelenium()
+            self.docSelenium.find_doc_on_search_results_page(new_doc[0], new_doc[1])
+            doc_street, doc_zip_code, doc_city, doc_tel = self.docSelenium.get_doc_data()
+            
+
         if not self.autoManager.get_and_wait_for_window(WindiaWindows.PATIENT, 3):
             self.autoManager.open_window(WindiaWindows.PATIENT)
         
@@ -113,15 +126,23 @@ class WindiaManager:
             self.autoManager.input_text(RelativesAutoID.SURNAME, self.patient_insurance_data.relative1[1])
         if len(self.patient_insurance_data.relative1) >= 3:
             self.autoManager.input_text(RelativesAutoID.TELEPHONE, self.patient_insurance_data.relative1[2])
+        #close relative window
+        self.autoManager.close_window()
+        time.sleep(3)
 
         #-----PFLEGE--------
         self.switch_patient_tab(PatientWindowTabs.PFLEGE)
-        doc1 = self.patient_insurance_data.doc1
-        doc2 = self.patient_insurance_data.doc2
-        if doc1:
-            self.select_docotor(doc1, 1)
-        if doc2:
-            self.select_docotor(doc2, 2)
+        if new_doc:
+            self.add_new_doctor(self.docSelenium.surname, self.docSelenium.name, doc_street, doc_zip_code, doc_city, doc_tel)
+            self.data_manager.add_doctor(self.docSelenium.surname , self.docSelenium.name)
+            
+        else:
+            doc1 = self.patient_insurance_data.doc1
+            doc2 = self.patient_insurance_data.doc2
+            if doc1:
+                self.select_docotor(doc1, 1)
+            if doc2:
+                self.select_docotor(doc2, 2)
         
         
         #------End on Diagnosis tab ---------
@@ -336,7 +357,48 @@ class WindiaManager:
         pygame.mixer.music.play()  
         time.sleep(2)   
 
+    def add_new_doctor(self, surname, name, street, zip_code, city, tel):
+        cbox = self.autoManager.windia.child_window(auto_id=str(67), control_type="ComboBox")
+        for child in cbox.children():
+            if "Button" in child._control_types:
+                rec = child.rectangle()
+                mouse.click(coords=( int(rec.left +40)  ,  int(rec.top + 5)))
 
+        self._doc_window_click_new_btn(120)
+
+        self.autoManager.input_text(DocAutoIds.TITEL, "dr.med.")
+        self.autoManager.input_text(DocAutoIds.SURNAME, surname)
+        self.autoManager.input_text(DocAutoIds.NAME, name )
+        self.autoManager.input_text(DocAutoIds.STREET, street )
+        self.autoManager.input_text(DocAutoIds.ZIP, zip_code )
+        self.autoManager.input_text(DocAutoIds.CITY, city )
+        self.autoManager.input_text(DocAutoIds.TEL, tel )
+
+        self._doc_window_click_new_btn(200)
+
+        #click yes to safe new address
+        try:
+            self.autoManager._click_popup_window_away(Windia_Buttons.SAVE_BUTTON_BTN.value, "windia")
+        except:
+            pass
+        self.autoManager.close_window()
+        time.sleep(2)
+        self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_1,surname)
+
+
+    def _doc_window_click_new_btn(self, offset : int):
+        rarrow = self.autoManager.windia.child_window(auto_id=str(DocAutoIds.RIGHT_ARROW_NEXT_TO_NEW.value) , control_type="Button")
+        rec = rarrow.rectangle()
+        mouse.click(coords=( int(rec.left + offset )  ,  int(rec.top)))
+        
+    def test(self):
+        self.autoManager.close_window()
+        #self.autoManager.select_from_dropdown(PatientAutoID.DOC_DROPDOWN_1,surname)
+        #self.autoManager._click_popup_window_away(Windia_Buttons.SAVE_BUTTON_BTN.value, "windia")
+        #self.autoManager.click_yes_no(Windia_Buttons.SAVE_BUTTON_BTN, self.autoManager.windia)
+
+#W = WindiaManager("")
+#W.test()
 #W._save_invoice_and_open_invoice_page()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 

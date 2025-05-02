@@ -58,6 +58,7 @@ class PatientAutoID(Enum):
     INSURANCE_P_DROPDOWN = 39
     DOC_DROPDOWN_1 = 67
     DOC_DROPDOWN_2 = 70
+    DOC_ADD_FOLDER = 1001
 
     REMARKS = 50
 
@@ -89,3 +90,13 @@ class Windia_Buttons(Enum):
     OK_BUTTON_BTN = 2 #
     RELATIVE_CLOSE_BTN = 7
     SAVE_BUTTON_BTN = 6 #
+
+class DocAutoIds(Enum):
+    RIGHT_ARROW_NEXT_TO_NEW = 39 
+    TITEL = 22
+    SURNAME = 4
+    NAME = 26
+    TEL = 27
+    STREET = 30
+    ZIP = 29
+    CITY = 31

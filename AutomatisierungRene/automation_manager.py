@@ -209,7 +209,7 @@ class AutomationManager:
         elements = element_list.children(control_type='ListItem')
         
         for element in elements:
-            print(element.window_text())
+            #print(element.window_text())
             if element_to_select in element.window_text():
                 #print(element)
                 try:
@@ -234,7 +234,7 @@ class AutomationManager:
             x_offset = -button.value if rec.left <= DIST_TO_SECOND_MONITOR else -button.value * 0.77
             self.click_on_top_left_corner(new_button, x_offset ,20, double_click)
             return
-  
+        print("1111")
         if not double_click:
             get_wrapper(button, self.windia).click()
         else:

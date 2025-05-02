@@ -9,23 +9,28 @@ from pywinauto.application import Application
     
 def get_wrapper(element : Enum, windia, title = None):
     print("getting wrapper for: " + str(element))
+    
     id = element.value 
-    c_type = get_control_type(id)
+    c_type = get_control_type(element)
 
     if c_type == "Pane":
         return windia.child_window(title=title, control_type=c_type)
     if c_type == "ComboBox":
         comboBox = windia.child_window(auto_id=str(id), control_type=c_type).wrapper_object()
         return comboBox.children(control_type='Edit')
-    
+    print("getting wrapper for: " + str(element) + " C: "+ str(c_type))
     return windia.child_window(auto_id=str(id), control_type=c_type, found_index=0).wrapper_object()
                     
             
 def get_control_type(element_id):
+
     if isinstance(element_id, Windia_Buttons ):
         print("bingo")
         return "Button"
-    #if element_id == 88:
+    try:
+        element_id = element_id.value
+    except:
+        pass
         
     if element_id == PatientAutoID.GENDER.value or element_id == PatientAutoID.SZ_PANE.value:
         return "Pane"

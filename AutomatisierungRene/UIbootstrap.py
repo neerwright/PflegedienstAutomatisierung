@@ -8,7 +8,7 @@ import pathlib
 from tkinter.filedialog import askdirectory, asksaveasfilename
 from tkinter import filedialog
 from leistungsnachweis_navigation import *
-#from local_db import * 
+from local_db import * 
 
 class UImanager():
     windiaManager = None
@@ -30,7 +30,7 @@ class UImanager():
 
         self.root.iconbitmap('AutomatisierungRene/ambIcon.ico')
         self.root.title("Windia Automation")
-        self.root.geometry("1000x1400")
+        self.root.geometry("800x1000")
         
         self.doctors = doctors
         self.insuranses = insuranses
@@ -48,16 +48,24 @@ class UImanager():
 
         
     def main_menu(self):
+        #scrollbar
+        scroll_bar = tb.Scrollbar(self.formFrame, orient="vertical", bootstyle="secondary")
+        scroll_bar.grid(row=0, column=4, padx=20, pady=20, sticky="e")
+
+        #canvas = tk.Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
+        
         self.menuFrame = tb.Frame(self.root)
         self.formFrame = tb.Frame(self.root)
         self.menuFrame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
         self.formFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
         
+        
+
         #bigger button style:
         big_default_btn_style = tb.Style()
-        big_default_btn_style.configure("default.TButton", font=("Helvetica", 18))
+        big_default_btn_style.configure("default.TButton", font=("Helvetica", 16))
         big_red_btn_style = tb.Style()
-        big_red_btn_style.configure("danger.TButton", font=("Helvetica", 18))
+        big_red_btn_style.configure("danger.TButton", font=("Helvetica", 16))
         
         
         self.invoice_button = tb.Button(self.menuFrame, text= "Rechnung", bootstyle="danger", style="danger.TButton", command=lambda: self.render_invoice())
@@ -251,20 +259,24 @@ class UImanager():
         self.ln_button.configure(bootstyle="default", style="default.TButton")
         self.patient_button.configure(bootstyle="danger", style="danger.TButton")
         
+        
+
         stammFrame = tb.Labelframe(self.formFrame, text="Stamm")
         careFrame = tb.Labelframe(self.formFrame, text = "Pflege")
-        stammFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
-        careFrame.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        stammFrame.grid(row=0, column=0, padx=20, pady=10, sticky="nw")
+        careFrame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
         relativeFrame = tb.Labelframe(self.formFrame, text = "Angehörige")
-        relativeFrame.grid(row=2, column=0, padx=20, pady=20,  sticky="w")
+        relativeFrame.grid(row=0, column=1, padx=10, pady=10,  sticky="nw")
         
         city, zip, street, name, surname, bday, gender, tel_box = self.stamm_ui(stammFrame)
         relative_name, relative_surname, relative_tel = self.relative_ui(relativeFrame)
-        doctor1, doctor2, insurance, insurance_number, care_deg, care_deg_date, geldleistung, start_date = self.care_ui(careFrame)
-        
+        doctor1, doctor2, insurance, insurance_number, care_deg, care_deg_date, geldleistung, start_date, new_doc_name, new_doc_address = self.care_ui(careFrame)
+        print("d1: " + str(doctor1))
+        print("d2:" + str(doctor2))
+        print("i" + str(insurance))
         sendFrame = tb.Frame(self.formFrame)
-        sendFrame.grid(row=4, column=0, padx=20, pady=20, sticky="w")
-        send_button = tb.Button(sendFrame, text="Neuer Patient anlegen starten",  style='Outline.TButton' ,  command=lambda: self.start_new_patient([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.entry.get().replace("/", "."), gender.get(),tel_box.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor1.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get(), start_date.get(), doctor2.get()]))
+        sendFrame.grid(row=4, column=0, padx=20, pady=10, sticky="w")
+        send_button = tb.Button(sendFrame, text="Neuer Patient anlegen starten",  style='Outline.TButton' ,  command=lambda: self.start_new_patient([city.get(), zip.get(), street.get() , name.get(), surname.get(), bday.entry.get().replace("/", "."), gender.get(),tel_box.get(), relative_name.get(), relative_surname.get(), relative_tel.get(), doctor1.get(), insurance.get(), insurance_number.get(), care_deg.get(), care_deg_date.get(), geldleistung.get(), start_date.get(), doctor2.get()], [new_doc_name.get(), new_doc_address.get()]))
         send_button.grid(row=0, column=0)
         
     def stamm_ui(self, labelframe):
@@ -321,8 +333,12 @@ class UImanager():
         doc2_combobox = tb.OptionMenu(labelframe, doctor2_var,self.doctors[0], *self.doctors, bootstyle="secondary")
         insurance_combobox = tb.OptionMenu(labelframe, insurance_var,list(self.insuranses.keys())[0], *list(self.insuranses.keys()) , bootstyle="secondary")
 
-        
-        
+        new_doc_name = tb.Label(labelframe, text="neuer Arzt-Name: " , bootstyle = "secondary")
+        new_doc_address = tb.Label(labelframe, text="neuer Arzt-Ort: " , bootstyle = "secondary")
+        new_doc_name_box = tb.Entry(labelframe)
+        new_doc_address_box = tb.Entry(labelframe)
+
+
         doctor1 = tb.Label(labelframe, text="Hausarzt: ")
         doctor2 = tb.Label(labelframe, text="Arzt2: ")
         insurance = tb.Label(labelframe, text="Krankenkasse: ")
@@ -339,14 +355,20 @@ class UImanager():
         doctor2.grid(row=0, column=2, pady=10)
         doc1_combobox.grid(row=0, column=1, pady=10)
         doc2_combobox.grid(row=0, column=3, pady=10)
-        insurance.grid(row=1, column=0, pady=10)
-        insurance_combobox.grid(row=1, column=1, pady=10)
-        insurance_number.grid(row=1, column=2, pady=10)
-        insurance_number_box.grid(row=1, column=3, pady=10)
-        care_deg.grid(row=2, column=0, pady=10)
-        care_deg_date.grid(row=2, column=2, pady=10)
-        care_deg_box.grid(row=2, column=1, pady=10)
-        care_deg_date_box.grid(row=2, column=3, pady=10)
+
+        new_doc_name.grid(row=1, column=0, pady=10)
+        new_doc_name_box.grid(row=1, column=1, pady=10)
+        new_doc_address.grid(row=1, column=2, pady=10)
+        new_doc_address_box.grid(row=1, column=3, pady=10)
+
+        insurance.grid(row=2, column=0, pady=10)
+        insurance_combobox.grid(row=2, column=1, pady=10)
+        insurance_number.grid(row=2, column=2, pady=10)
+        insurance_number_box.grid(row=2, column=3, pady=10)
+        care_deg.grid(row=3, column=0, pady=10)
+        care_deg_date.grid(row=3, column=2, pady=10)
+        care_deg_box.grid(row=3, column=1, pady=10)
+        care_deg_date_box.grid(row=3, column=3, pady=10)
         
         geldleistung = IntVar()
         g_radio = tb.Radiobutton(labelframe, text="Geldleistung", variable=geldleistung, value=1, command=lambda: print(geldleistung))
@@ -355,23 +377,28 @@ class UImanager():
         
         date = tb.Label(labelframe, text="Betreuungsbeginn: ")
         date_box = tb.Entry(labelframe)
-        date.grid(row=3, column=0, pady=10)
-        date_box.grid(row=3, column=1, pady=10)
+        date.grid(row=4, column=0, pady=10)
+        date_box.grid(row=4, column=1, pady=10)
         
         
         
-        g_radio.grid(row=4, column=0, pady=10)
-        k_radio.grid(row=4, column=1, pady=10)
+        g_radio.grid(row=5, column=0, pady=10)
+        k_radio.grid(row=5, column=1, pady=10)
         
-        return doc1_combobox,doc2_combobox, insurance_combobox, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box
+        return doctor1_var,doctor2_var, insurance_var, insurance_number_box, care_deg_box, care_deg_date_box, geldleistung, date_box, new_doc_name_box, new_doc_address_box
     
-    def start_new_patient(self, values):
-        print("adding patient....")
+    def start_new_patient(self, values, new_doc):
+        print("adding patient...." + str(new_doc))
         self.windiaManager.patient_data = Patient(values[3], values[4], values[6], values[5], "", values[2], values[1], values[0], values[7], str(values[17]), "", str(values[17]))
+        
         
         self.windiaManager.patient_insurance_data = None
         self.windiaManager.patient_insurance_data = PatientInsuranceInfo(values[13], values[12], values[12], values[14], values[15],values[11],values[18], [values[8],values[9],values[10]], "", values[16] )
-        self.windiaManager.add_new_patient()
+        
+        if new_doc[0]:
+            print("new")
+            self.windiaManager.add_new_patient(new_doc=[new_doc[0], new_doc[1]])
+        else: self.windiaManager.add_new_patient()
     
     
 #doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
