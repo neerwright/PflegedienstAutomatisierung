@@ -8,7 +8,7 @@ import pathlib
 from tkinter.filedialog import askdirectory, asksaveasfilename
 from tkinter import filedialog
 from leistungsnachweis_navigation import *
-from local_db import * 
+#from local_db import * 
 
 class UImanager():
     windiaManager = None
@@ -28,7 +28,7 @@ class UImanager():
         
         self.root = tb.Window(themename="superhero")
 
-        self.root.iconbitmap('PflegedienstAutomatisierung/AutomatisierungRene/ambIcon.ico')
+        self.root.iconbitmap('AutomatisierungRene/ambIcon.ico')
         self.root.title("Windia Automation")
         self.root.geometry("1000x1400")
         
@@ -78,6 +78,7 @@ class UImanager():
         pathShowFrame = tb.Frame(self.formFrame)
         month_frame = tb.Frame(self.formFrame)
         dataFrame = tb.Labelframe(self.formFrame, text = "Patient / LN")
+        bar = tb.Scrollbar(dataFrame, orient='vertical')
         sendFrame = tb.Frame(self.formFrame)
         
         pathEntryFrame.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
@@ -373,10 +374,10 @@ class UImanager():
         self.windiaManager.add_new_patient()
     
     
-doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
-insurance_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/both_insurances.txt"
-base_ln_path = "Hello"
-dm = localDataManager(doctors_list_path,insurance_list_path)
-W = WindiaManager()
-ui = UImanager(W, dm.get_doctors(), dm.get_insurances(), base_ln_path)
-ui.start()
+#doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
+#insurance_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/both_insurances.txt"
+#base_ln_path = "Hello"
+#dm = localDataManager(doctors_list_path,insurance_list_path)
+#W = WindiaManager()
+#ui = UImanager(W, "","" , base_ln_path)
+#ui.start()

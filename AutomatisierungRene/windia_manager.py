@@ -264,11 +264,8 @@ class WindiaManager:
         self.autoManager.click_inside_window(WindiaWindows.PATIENT,x , y)
             
     def print_lns(self, path, month):
-        self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
-        time.sleep(3)
-        #input Month
-        LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
-        self.autoManager.input_text(LN_ids.LN_MONTH, str(month), LN)
+
+        
         
         patient_ln_type = read_VE_fromdocx_file(path)
 
@@ -281,8 +278,12 @@ class WindiaManager:
             self.autoManager.cur_selected_patient = patient
 
             self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
-            
-            if ln_type == "E+V":
+            #input Month
+            LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
+            print(LN)
+            self.autoManager.input_text(LN_ids.LN_MONTH, str(month),windia= LN)
+
+            if ln_type == "E+V" or ln_type == "E + V":
                 print_leistungsnachweis(self.autoManager, "E", "E")
                 time.sleep(5)
                 self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)

@@ -17,14 +17,17 @@ def read_VE_fromdocx_file(path : str):
             
             LN_type = table.cell(row, 2).text if len(table.rows) > 2 else ""
             #print("LN_type" + str(LN_type))
-            if LN_type == "E" or LN_type == "V" or LN_type == "E+V":
+            if LN_type == "E" or LN_type == "V" or LN_type == "E + V" or LN_type == "E+V"  :
                 name = table.cell(row, 0).text
+                name = name.split(",", 1)
+                name = name[0] + ", " + name[1].split(' ', 2)[1]
+                print(name)
                 #print("name: " + str(name))
                 patients[name] = LN_type
-        #print(patients)
+        print(patients)
         return patients
         
-        
+
 
 
 def input_hours_for_bill(automationManager : AutomationManager, max_hours : int, interships : int):

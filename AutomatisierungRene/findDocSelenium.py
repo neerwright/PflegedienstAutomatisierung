@@ -5,11 +5,11 @@ import time
 
 class findDocSelenium():
     driver = None
-    
+    service = None
     def __init__(self):
-        service = Service()
+        self.service = Service()
         options = webdriver.ChromeOptions()
-        self.driver = webdriver.Chrome(service=service, options=options)
+        self.driver = webdriver.Chrome(service=self.service, options=options)
 
 
     def search_doc(self, name, city):
@@ -31,6 +31,8 @@ class findDocSelenium():
         url = f"https://www.arzt-auskunft.de/arzt-auskunft/suche_sn/index.js?a=DL&Ft={name}+{surname}&Ft_e=&Ftg={city}&Ftg_e="
         self.driver.get(url)
         time.sleep(2)
+        self.driver.find_element(By.ID, "cookiescript_accept").click()
+
         doc = None
         doc_name = ""
         try:
@@ -45,12 +47,17 @@ class findDocSelenium():
             return False
         
     def get_doc_data(self):
-        street = ""
-        try:
-            street =  self.driver.find_element(By.XPATH("//span[@itemprop='streetAddress']"))
+        self.driver.get("https://www.arzt-auskunft.de/arzt/anaesthesiologie-allgemeinmedizin/herrenberg/dr-florian-weiss-7450301")
+        time.sleep(3)
+        self.driver.find_element(By.ID, "cookiescript_accept").click()
+        time.sleep(2)
+        
+        street =  self.driver.find_element(By.XPATH,("//div[@itemprop='address']/span[@itemprop='streetAddress']"))
+        print("element: " + str(street))
+        print("inner" + street.get_attribute('innerHTML'))
+        print("txt: " + street.text)
             #"span[itemprop='streetAddress']"
-        except:
-            pass
+        
         # https://www.arzt-auskunft.de/arzt/neurologie-psychiatrie-und-psychotherapie/herrenberg/dr-heiko-huber-4987487
 #<span itemprop="streetAddress">Bahnhofstraße 2/3</span>
         #zip_code =  self.driver.find_element(By.CSS_SELECTOR("[span='postalCode']")).get_attribute('innerHTML')
@@ -66,7 +73,7 @@ class findDocSelenium():
         
        
 s = findDocSelenium()
-s.find_doc_on_search_results_page("Huber", "Heiko", "Herrenberg")
-time.sleep(5)
+#s.find_doc_on_search_results_page("Huber", "Heiko", "Herrenberg")
+#time.sleep(5)
 s.get_doc_data()
-time.sleep(30)
+time.sleep(300000)
