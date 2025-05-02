@@ -87,3 +87,4 @@ class Windia_Buttons(Enum):
     PG_BTN = 38 #
     OK_BUTTON_BTN = 2 #
     RELATIVE_CLOSE_BTN = 7
+    SAVE_BUTTON_BTN = 6 #

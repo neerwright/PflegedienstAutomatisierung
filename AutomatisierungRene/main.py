@@ -5,7 +5,7 @@ from windia_manager import *
 def main():
     doctors_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/doctors.txt"
     insurance_list_path = "PflegedienstAutomatisierung/AutomatisierungRene/both_insurances.txt"
-    base_ln_path = "PflegedienstAutomatisierung/AutomatisierungRene/LN.docx"
+    base_ln_path = "C:/Users/Verwaltung/Documents/Leistungsnachweise E, V, SGB V - Feb. 25.docx"
     W = WindiaManager()
     #dm = localDataManager(doctors_list_path,insurance_list_path)
     #UI = UImanager(W,dm.get_doctors(), dm.get_insurances() ,base_ln_path)

@@ -190,9 +190,10 @@ class WindiaManager:
         self.autoManager.close_window()    
         self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
         
-        
-        interships = 2 if self.catalog_data.dates[1] else 1
+        print(self.catalog_data.hours[1])
+        interships = 2 if not self.catalog_data.hours[1] else 1
         input_hours_for_bill(self.autoManager, max_hours, interships)
+        self._save_invoice_and_open_invoice_page()
         
     def _save_new_patient(self):
         
@@ -265,7 +266,7 @@ class WindiaManager:
             
     def print_lns(self, path, month):
 
-        
+        set_month = False
         
         patient_ln_type = read_VE_fromdocx_file(path)
 
@@ -279,9 +280,10 @@ class WindiaManager:
 
             self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
             #input Month
-            LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
-            print(LN)
-            self.autoManager.input_text(LN_ids.LN_MONTH, str(month),windia= LN)
+            if not set_month:
+                LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
+                self.autoManager.input_text(LN_ids.LN_MONTH, str(month),windia= LN)
+                set_month = True
 
             if ln_type == "E+V" or ln_type == "E + V":
                 print_leistungsnachweis(self.autoManager, "E", "E")
@@ -296,17 +298,26 @@ class WindiaManager:
             cur_page = "E"
                 
     def test(self):
-        self.autoManager.cur_selected_patient="Mock, Marina"
-        #LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
-        #LN.child_window(auto_id="120", control_type="Edit").set_text("3")
+        self.autoManager.open_rechnungslegung()
         
-        self.autoManager.input_text(LN_ids.LN_MONTH, "4", self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5))
-        #self.autoManager.click_button(Windia_Buttons.OK_BUTTON_BTN)
-        #print(find_caregiver_row(self.autoManager))
-        
+    def _save_invoice_and_open_invoice_page(self):
+        LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
+        self.autoManager.close_window(LN)
+        time.sleep(3)
+        self.autoManager.windia.set_focus()
+        self.autoManager.click_yes_no(Windia_Buttons.RELATIVE_CLOSE_BTN, self.autoManager.windia)
+        time.sleep(3)
+        LN.set_focus()
+        self.autoManager.click_yes_no(Windia_Buttons.SAVE_BUTTON_BTN, LN)
+        time.sleep(5)
+        self.autoManager.open_rechnungslegung()
         
 
-#W = WindiaManager()
+        
+
+W = WindiaManager()
+#W._save_invoice_and_open_invoice_page()
+W.test()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
 ##W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")

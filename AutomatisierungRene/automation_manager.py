@@ -91,6 +91,30 @@ class AutomationManager:
                 self.get_and_wait_for_window(WindiaWindows.AUSDRUCK_LN, 10)
             case WindiaWindows.WINDIA:
                 pass
+
+    def open_rechnungslegung(self):
+        #menuApp = self.setup_automation()
+        open_windows = Desktop(backend="uia").windows()
+        for window in open_windows:
+            window_title = window.window_text()
+            if window_title == "AMBULINO GmbH":
+                pwa_app = Application(backend="uia").connect(handle=window.handle, timeout=4)
+                dialog = pwa_app.window(handle=window.handle)
+                print("Found " + str(pwa_app))
+                dialog.set_focus()
+                rec = dialog.child_window(auto_id="1", control_type="Pane").wrapper_object().rectangle()
+                mouse.click(coords=(int(rec.right - 50), int(rec.bottom - 80)))
+            
+        #\\ambulinods\windia\windiastart.exe
+ 
+        #app_path = "//ambulinods/windia/windiastart.exe"
+
+
+        
+        
+        #print(rec)
+        #
+        
         
                     
     def _click_popup_window_away(self, id, title, w = None):
@@ -134,6 +158,7 @@ class AutomationManager:
             self.open_window(WindiaWindows.PATIENT)
         patient_name = patient_name.replace(",", "")
         patient_name = patient_name.replace(" ", "")
+        patient_name = patient_name.replace("-", "")
         print(patient_name)
         #open Patienten Window
         #self.open_window(WindiaWindows.PATIENT)
@@ -141,14 +166,19 @@ class AutomationManager:
         patient_scrollbar = self.windia.child_window(auto_id="1", control_type="List").wrapper_object()
         patients = patient_scrollbar.children(control_type='ListItem')
         for patient in patients:
+            
             patient_string = ""
             for char in patient.window_text():
+                
                 if char.isalpha():
                     patient_string += char
+           
             if patient_string == patient_name:
                 print("found patient!")
                 patient.invoke()
                 self.cur_selected_patient = patient_name
+                return True
+        return False
                 
     
     def get_child_object(self):
@@ -202,6 +232,9 @@ class AutomationManager:
         if window:
             window.SchließenButton.invoke()
         self.windia.SchließenButton.invoke()
+
+    def click_yes_no(self, butn : Enum,  window):
+        window.child_window(auto_id=str(butn.value), control_type="Button").wrapper_object().click()
 
     def click_button(self, button : Enum, double_click = False):
         if button == PatientAutoID.PG_HISTORY_TOOLBAR_NEW or button == PatientAutoID.PG_HISTORY_TOOLBAR_SAFE or button == PatientAutoID.PG_HISTORY_TOOLBAR_CLOSE or button == PatientAutoID.PG_HISTORY_TOOLBAR_EDIT:
