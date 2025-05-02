@@ -7,6 +7,7 @@ import re
 from catalog_data import Catalog
 from leistungsnachweis_navigation import *
 
+import pygame
 
 INSURANCE_K_DROPDOWN_TITLE = "Behandlungspflege   ja / nein"
 INSURANCE_P_DROPDOWN_TITLE = "Pflegeversicherung   ja / nein"
@@ -124,6 +125,7 @@ class WindiaManager:
         
         
         #------End on Diagnosis tab ---------
+        self._play_success_sound()
         return 
 
 
@@ -196,6 +198,7 @@ class WindiaManager:
         interships = 2 if not self.catalog_data.hours[1] else 1
         input_hours_for_bill(self.autoManager, max_hours, interships)
         self._save_invoice_and_open_invoice_page()
+        self._play_success_sound()
         
     def _save_new_patient(self):
         
@@ -306,6 +309,7 @@ class WindiaManager:
             cur_page = "E"
         
         print("Donnneeeee!")
+        self._play_success_sound()
                 
     def check_SZ(self):
         box_pane = self.autoManager.windia.child_window(auto_id=str(PatientAutoID.SZ_PANE.value), control_type="Pane")
@@ -326,8 +330,11 @@ class WindiaManager:
         time.sleep(5)
         self.autoManager.open_rechnungslegung()
         
-
-        
+    def _play_success_sound():
+        pygame.mixer.init()
+        pygame.mixer.music.load("PflegedienstAutomatisierung\AutomatisierungRene\successSound.mp3")
+        pygame.mixer.music.play()  
+        time.sleep(2)   
 
 #W = WindiaManager()
 #W._save_invoice_and_open_invoice_page()
