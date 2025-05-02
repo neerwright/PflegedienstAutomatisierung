@@ -75,6 +75,8 @@ class WindiaManager:
         self.autoManager.click_inside_window(WindiaWindows.PATIENT, 3/9 , 9/10)
 
         #input patient info
+        if self.patient_invoice is not None:
+            self.check_SZ()
         self.input_stamm()   
         
         #----------------Krankenkasse-------------------------#
@@ -305,8 +307,12 @@ class WindiaManager:
         
         print("Donnneeeee!")
                 
-    def test(self):
-        self.autoManager.open_rechnungslegung()
+    def check_SZ(self):
+        box_pane = self.autoManager.windia.child_window(auto_id=str(PatientAutoID.SZ_PANE.value), control_type="Pane")
+        for child_pane in box_pane.children(control_type='Pane'):
+            if child_pane.window_text() == "SZ":
+                rec = child_pane.rectangle()
+                mouse.click(coords=(int(rec.left), int(rec.top)))
         
     def _save_invoice_and_open_invoice_page(self):
         LN = self.autoManager.get_and_wait_for_window(WindiaWindows.LEISTUNGS_NACHWEIS, 5)
@@ -325,7 +331,6 @@ class WindiaManager:
 
 #W = WindiaManager()
 #W._save_invoice_and_open_invoice_page()
-#W.test()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
 ##W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")

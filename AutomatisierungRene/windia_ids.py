@@ -63,6 +63,7 @@ class PatientAutoID(Enum):
 
     LEISTUNG = 6
 
+    SZ_PANE = 147
     #PG_BUTTON = 38
 
     PG_HISTORY_TOOLBAR_NEW = -10  #number used for the x offset in the toolbar to click on the button via coordinates

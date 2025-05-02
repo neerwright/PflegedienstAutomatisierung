@@ -27,7 +27,7 @@ def get_control_type(element_id):
         return "Button"
     #if element_id == 88:
         
-    if element_id == PatientAutoID.GENDER.value:
+    if element_id == PatientAutoID.GENDER.value or element_id == PatientAutoID.SZ_PANE.value:
         return "Pane"
     if element_id == PatientAutoID.INVOICE_ANREDE.value or element_id == PatientAutoID.ANREDE.value or element_id == PatientAutoID.LEISTUNG.value:
         return "ComboBox"
