@@ -30,7 +30,7 @@ class UImanager():
 
         self.root.iconbitmap('AutomatisierungRene/ambIcon.ico')
         self.root.title("Windia Automation")
-        self.root.geometry("800x1000")
+        self.root.geometry("1000x1000")
         
         self.doctors = doctors
         self.insuranses = insuranses
@@ -48,12 +48,6 @@ class UImanager():
 
         
     def main_menu(self):
-        #scrollbar
-        scroll_bar = tb.Scrollbar(self.formFrame, orient="vertical", bootstyle="secondary")
-        scroll_bar.grid(row=0, column=4, padx=20, pady=20, sticky="e")
-
-        #canvas = tk.Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
-        
         self.menuFrame = tb.Frame(self.root)
         self.formFrame = tb.Frame(self.root)
         self.menuFrame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
@@ -324,7 +318,7 @@ class UImanager():
     
     
     def care_ui(self,labelframe):
-        
+
         doctor1_var = tb.StringVar()
         doctor2_var = tb.StringVar()
         insurance_var = tb.StringVar()
@@ -349,7 +343,7 @@ class UImanager():
   
         insurance_number_box = tb.Entry(labelframe)
         care_deg_box = tb.Entry(labelframe)
-        care_deg_date_box = tb.Entry(labelframe)
+        care_deg_date_box = tb.DateEntry(labelframe, bootstyle="default")
         
         doctor1.grid(row=0, column=0 , pady=10)
         doctor2.grid(row=0, column=2, pady=10)
@@ -376,7 +370,7 @@ class UImanager():
   
         
         date = tb.Label(labelframe, text="Betreuungsbeginn: ")
-        date_box = tb.Entry(labelframe)
+        date_box = tb.DateEntry(labelframe, bootstyle="default")
         date.grid(row=4, column=0, pady=10)
         date_box.grid(row=4, column=1, pady=10)
         

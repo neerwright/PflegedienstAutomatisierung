@@ -58,6 +58,7 @@ class findDocSelenium():
         text =  text.replace("Frau", "").replace("Herr", "").replace("Prof.", "").replace("Dr.", "").replace("med.", "").replace("Dipl.-Psych.", "").replace("dent", "")
         text = ' '.join(text.split())
         print(text.split(" "))
+        text = text.split(" ")
         self.name = text[0]
         self.surname = text[1]
         
