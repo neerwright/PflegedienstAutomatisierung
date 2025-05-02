@@ -20,7 +20,8 @@ def read_VE_fromdocx_file(path : str):
             if LN_type == "E" or LN_type == "V" or LN_type == "E + V" or LN_type == "E+V"  :
                 name = table.cell(row, 0).text
                 name = name.split(",", 1)
-                name = name[0] + ", " + name[1].split(' ', 2)[1]
+                name = name[0].replace(" – ","–").replace(" - ","-").replace("–","-") + ", " + name[1].replace(" – ","–").replace(" - ","-").replace("–","-")
+                
                 print(name)
                 #print("name: " + str(name))
                 patients[name] = LN_type
@@ -138,7 +139,7 @@ def print_leistungsnachweis(automanager : AutomationManager, type, cur_page):
     #print once
     time.sleep(4)
     ln_print_win =  automanager.get_and_wait_for_window(WindiaWindows.AUSDRUCK_LN, 3)
-    #ln_print_win.child_window(auto_id= str(Windia_Buttons.LN_PRINT_ONCE_BTN.value), control_type="Button").wrapper_object().click()
+    ln_print_win.child_window(auto_id= str(Windia_Buttons.LN_PRINT_ONCE_BTN.value), control_type="Button").wrapper_object().click()
     
     #close print page
     automanager.close_window(ln_print_win)

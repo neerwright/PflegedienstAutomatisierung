@@ -276,6 +276,12 @@ class WindiaManager:
             
             self.autoManager.select_patient(patient)
             self.autoManager.close_window()
+
+            if "-" in patient:
+                patient = patient.replace(" - ", "-")
+            #patient.replace(",  ", ",")
+            patient = ' '.join(patient.split())
+            print("curr Pat: " + str(patient))
             self.autoManager.cur_selected_patient = patient
 
             self.autoManager.open_window(WindiaWindows.LEISTUNGS_NACHWEIS)
@@ -296,6 +302,8 @@ class WindiaManager:
             
             print_leistungsnachweis(self.autoManager, ln_type, cur_page)
             cur_page = "E"
+        
+        print("Donnneeeee!")
                 
     def test(self):
         self.autoManager.open_rechnungslegung()
@@ -315,9 +323,9 @@ class WindiaManager:
 
         
 
-W = WindiaManager()
+#W = WindiaManager()
 #W._save_invoice_and_open_invoice_page()
-W.test()
+#W.test()
 #W.autoManager.open_window(WindiaWindows.PATIENT)
 
 ##W.patient_data = Patient("name7", "surname7", "W" ,"15.04.1995", "Frau", "Froschstr", "71126", "Gäufelden", "017522314", "07.04.2025", "", "09.04.2025")

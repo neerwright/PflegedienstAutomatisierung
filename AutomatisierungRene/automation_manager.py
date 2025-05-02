@@ -104,16 +104,6 @@ class AutomationManager:
                 dialog.set_focus()
                 rec = dialog.child_window(auto_id="1", control_type="Pane").wrapper_object().rectangle()
                 mouse.click(coords=(int(rec.right - 50), int(rec.bottom - 80)))
-            
-        #\\ambulinods\windia\windiastart.exe
- 
-        #app_path = "//ambulinods/windia/windiastart.exe"
-
-
-        
-        
-        #print(rec)
-        #
         
         
                     
